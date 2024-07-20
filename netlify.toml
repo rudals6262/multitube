@@ -1,7 +1,8 @@
 [build]
-  base = "c:/my-project"  # base 디렉토리 설정
-  publish = "dist"  # 빌드된 파일이 위치하는 디렉토리
-  command = "npm run build"  # 빌드 명령어
+  base = "."
+  publish = "public"
+  command = "npm run build"
 
-[build.environment]
-  NODE_ENV = "production"
+[dev]
+  command = "npm start"
+  port = 9000
