@@ -1,3 +1,8 @@
+import './styles.css'; // CSS 파일을 import
+
+// JavaScript 코드
+console.log('Hello, Webpack with CSS!');
+
 let slideQueue = [];
 let player;
 let videoDuration = 0;
