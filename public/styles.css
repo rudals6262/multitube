@@ -1,0 +1,502 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    background-color: #f4f4f4;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Layout Containers */
+.wrapper {
+    width: 94%;
+    max-width: 900px;
+    box-sizing: border-box;
+    margin: 20px auto;
+    padding: 0;
+}
+
+.container, .action-buttons {
+    width: 100%;
+    max-width: 900px;
+    min-height: 38px;
+    box-sizing: border-box;
+}
+
+.container {
+    margin-top: 20px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 900px;
+    min-height: 38px;
+    box-sizing: border-box;
+}
+
+.action-buttons button {
+    width: 100%;
+    max-width: 900px;
+    min-height: 38px;
+    box-sizing: border-box;
+}
+
+.group-title input, 
+.description textarea, 
+.input-group input, 
+.action-buttons .confirm-buttons button {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.group-title input {
+    font-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.description textarea {
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    resize: none;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 38px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.group-details > *:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.mediabox, .container, .preview-button {
+    width: 100%;
+    max-width: 100%; /* 최대 너비를 100%로 설정 */
+}
+
+.mediabox {
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.buttons button, .action-buttons button {
+    cursor: pointer;
+    background: #ccc;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+    padding: 10px 40px;
+    width: auto;
+    min-width: 120px; /* 최소 너비 설정 */
+    text-align: center;
+}
+
+.buttons button:hover, .input-group button:hover, .action-buttons button:hover {
+    background: #ff6f00;
+}
+
+.video-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.video-frame {
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+    position: relative;
+}
+
+.video-frame iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.input-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.input-group .plus-minus-buttons {
+    display: flex;
+    gap: 5px;
+    flex-direction: row; /* Ensure the buttons are displayed side-by-side */
+}
+
+.input-group .plus-minus-buttons button {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-group input {
+    flex: 1;
+}
+
+.input-group button {
+    padding: 5px 10px;
+    cursor: pointer;
+    background: #ccc;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.input-group button:hover {
+    background: #ff6f00;
+}
+
+.media-select-container {
+    display: flex;
+    justify-content: space-between; /* Buttons on either end */
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center; /* Align vertically centered */
+}
+
+.media-select-container .media-select {
+    flex-grow: 1;
+    position: relative;
+    margin-right: auto;
+    justify-content: flex-start; /* Align media select button to the left */
+}
+
+.media-select-container .confirm-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end; /* Align confirm buttons to the right */
+    width: auto;
+}
+
+.media-select-container .confirm-buttons button {
+    padding: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    min-width: 80px;
+    flex: 1;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.action-buttons .media-select {
+    display: flex;
+    justify-content: flex-start; /* 좌측 정렬 */
+}
+
+.action-buttons .confirm-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end; /* 우측 정렬 */
+    width: auto;
+}
+
+.group-btn {
+    display: flex;
+    justify-content: space-between; /* 좌우로 정렬 */
+    width: 100%; /* 부모 요소의 너비 설정 */
+}
+
+.preview-button {
+    display: flex;
+    width: 100%; /* 부모 요소의 너비 설정 */
+    margin-top: 20px;
+    margin-bottom: 20px; /* 마진 추가 */
+}
+
+.preview-btn {
+    cursor: pointer;
+    background: #ccc;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+    padding: 10px 30px; /* 세로 길이 늘리고 가로 길이 줄임 */
+    width: 100%;
+    min-width: 80px; /* 최소 너비 설정 */
+    text-align: center;
+}
+
+.preview-btn:hover {
+    background: #ff6e00;
+}
+
+.slide {
+    position: relative;
+    width: 90px;
+    height: 60px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin: 2px;  /* 여백 추가 */
+    flex: none;  /* 추가: 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
+}
+
+.slide.selected {
+    outline: 3px solid #ff6f00;
+    outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
+}
+
+.empty-slide {
+    width: 90px;
+    height: 60px;
+    background-color: #ccc;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: 2px;  /* 여백 추가 */
+    flex: none;  /* 추가: 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
+}
+
+.empty-slide.selected {
+    outline: 3px solid #ff6f00;
+    outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
+}
+
+.empty-slide .plus-sign {
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.slides {
+    display: flex;
+    height: 75px;
+    align-items: center;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 5px;  /* 패딩 추가 */
+    box-sizing: border-box;  /* 박스 사이징 추가 */
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.slide .slide-close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #ccc;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slide .slide-close:hover {
+    background: #ff6e00;
+}
+
+.slide.active {
+    border-color: #ff6f00;;
+}
+
+.time-slider-wrapper {
+    width: 100%;
+    position: relative;
+    height: 100px;
+    display: none; /* 초기에는 숨김 */
+    overflow-x: auto;
+}
+
+/* 타임슬라이더 컨테이너 */
+.time-slider-container {
+    width: 100%;
+    height: 90px;
+    margin-bottom: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    -ms-overflow-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: #fff #ccc;
+}
+
+/* Chrome, Safari, Edge, and Opera */
+.time-slider-container::-webkit-scrollbar {
+    height: 8px; /* 스크롤바 전체 높이 증가 */
+}
+
+.time-slider-container::-webkit-scrollbar-track {
+    background: #ccc; /* 트랙 색상 */
+    height: 2px; /* 트랙 높이 */
+}
+
+.time-slider-container::-webkit-scrollbar-thumb {
+    background: #fff; /* 썸 색상 */
+    height: 8px; /* 썸 높이를 스크롤바 전체 높이와 동일하게 */
+    border-radius: 4px; /* 썸 모서리 둥글게 */
+}
+
+.time-slider-container::-webkit-scrollbar-thumb:hover {
+    background: #eee; /* 호버 시 색상 */
+}
+
+.time-slider-container::-webkit-scrollbar-button {
+    display: none; /* 좌우 버튼 제거 */
+}
+
+.slider-track {
+    height: 54px;
+    background-color: #e0e0e0;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 13px;
+    transform-origin: center;
+    --zoom-factor: 1;
+    --tick-base: 60;
+}
+
+.slider-track::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        repeating-linear-gradient(to right, #ffffff, #ffffff 2px, transparent 2px, transparent calc(100% / (var(--tick-base) / 10))),
+        repeating-linear-gradient(to right, #ffffff, #ffffff 1px, transparent 1px, transparent calc(100% / (var(--tick-base) / 5))),
+        repeating-linear-gradient(to right, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5) 1px, transparent 1px, transparent calc(100% / var(--tick-base)));
+    background-size: 100% 20px, 100% 15px, 100% 10px;
+    background-position: 0 0, 0 0, 0 0;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.slider-range {
+    position: absolute;
+    height: 54px;
+    background-color: #ffbd8b;
+    z-index: 1;
+    top: 50%; /* 부모 컨테이너의 중앙에 위치하도록 설정 */
+    transform: translateY(-50%); /* 정확한 중앙 정렬 */
+}
+
+.slider-range::before, .slider-range::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #ff6f00;
+}
+
+.slider-range::before {
+    top: -3px; /* 위쪽에 위치 */
+}
+
+.slider-range::after {
+    bottom: -3px; /* 아래쪽에 위치 */
+}
+
+.slider-left-thumb, .slider-right-thumb, .current-time-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.slider-left-thumb, .slider-right-thumb {
+    width: 20px;
+    height: 60px;
+    background-color: #ff6f00;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.slider-left-thumb::before, .slider-right-thumb::before {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 30px;
+    border-radius: 1.5px;
+    background-color: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.slider-left-thumb {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin-left: -20px;
+}
+
+.slider-right-thumb {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-left: 0px;
+}
+
+.current-time-indicator {
+    width: 8px;
+    height: 70px;
+    border-radius: 4px;
+    background-color:#ff6f00;
+    z-index: 5;
+}
