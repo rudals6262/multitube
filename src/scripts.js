@@ -562,6 +562,7 @@ function limitTextareaLines(textarea, maxLines) {
 }
 
 function editSlide(slideId) {
+    console.log("Current slideQueue:", slideQueue);
     const slideIndex = slideQueue.findIndex(slide => slide.id === slideId);
     if (slideIndex === -1) {
         console.error(`Slide with id ${slideId} not found.`);
@@ -784,7 +785,7 @@ function addSlide() {
     const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
 
     const slideId = createUniqueSlideId();
-    const slideData = {
+    slideQueue.push({
         id: slideId,
         type: 'video',
         videoId,
@@ -792,23 +793,20 @@ function addSlide() {
         endTime,
         videoDuration,
         videoLink: updatedUrl
-    };
+    });
 
+    console.log("Slide added. Current slideQueue:", JSON.stringify(slideQueue));
+    
     const slidesContainer = document.querySelector('.slides');
     const newSlide = document.createElement('div');
     newSlide.className = 'slide';
     newSlide.dataset.id = slideId;
-    newSlide.dataset.slide = JSON.stringify(slideData); // Store slide data in a data attribute
     newSlide.innerHTML = `
         <img src="https://img.youtube.com/vi/${videoId}/0.jpg" alt="Video Thumbnail" style="aspect-ratio: 16/9;">
         <div class="slide-close">&times;</div>
     `;
 
     newSlide.addEventListener('click', () => handleSlideClick(slideId));
-    newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
-        event.stopPropagation();
-        removeSlide(slideId);
-    });
 
     const emptySlide = slidesContainer.querySelector('.empty-slide');
     if (emptySlide) {
@@ -817,13 +815,16 @@ function addSlide() {
         slidesContainer.appendChild(newSlide);
     }
 
+    newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
+        event.stopPropagation();
+        removeSlide(slideId);
+    });
+
     makeSlidesSortable();
 
     if (!document.querySelector('.empty-slide')) {
         addEmptySlide();
     }
-
-    console.log("Slide added. Current slides in DOM:", slidesContainer.querySelectorAll('.slide:not(.empty-slide)'));
 }
 
 function openPreviewWindow() {
@@ -1002,16 +1003,13 @@ function updateSlideIndices() {
 }
 
 function selectSlide(slideId) {
-    document.querySelectorAll('.slide, .empty-slide').forEach(slide => {
-        slide.classList.remove('selected');
-    });
-
-    const selectedSlide = document.querySelector(`.slide[data-id="${slideId}"]`);
-    if (selectedSlide) {
-        selectedSlide.classList.add('selected');
-        currentEditingSlideIndex = slideQueue.findIndex(slide => slide.id === slideId); // 수정된 부분
-        editSlide(slideId);
+    console.log("Selecting slide with id:", slideId);
+    const slide = slideQueue.find(slide => slide.id === slideId);
+    if (!slide) {
+        console.error(`Slide with id ${slideId} not found.`);
+        return;
     }
+    editSlide(slideId);
 }
 
 function updateLayout() {
