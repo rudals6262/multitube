@@ -530,9 +530,8 @@ function handleButtonClick(e) {
 }
 
 function handlePreviewClick() {
-    const slidesContainer = document.querySelector('.slides');
-    const slides = slidesContainer.querySelectorAll('.slide[data-slide]');
-    if (slides.length === 0) {
+    console.log("Preview button clicked. Current slideQueue:", slideQueue);
+    if (slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }
@@ -831,15 +830,12 @@ function openPreviewWindow() {
     const groupTitle = document.querySelector('.group-title input').value;
     const description = document.querySelector('.description textarea').value;
 
-    const slidesContainer = document.querySelector('.slides');
-    const slides = slidesContainer.querySelectorAll('.slide[data-slide]');
+    console.log("Opening preview. Current slideQueue:", slideQueue);
 
-    if (slides.length === 0) {
+    if (!Array.isArray(slideQueue) || slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }
-
-    const slideQueue = Array.from(slides).map(slide => JSON.parse(slide.dataset.slide));
 
     const slideQueueParam = encodeURIComponent(JSON.stringify(slideQueue));
     const groupTitleParam = encodeURIComponent(groupTitle);
@@ -848,10 +844,6 @@ function openPreviewWindow() {
     const url = `preview.html?slideQueue=${slideQueueParam}&groupTitle=${groupTitleParam}&description=${descriptionParam}`;
 
     console.log("Opening preview window with URL:", url);
-
-    if (player && typeof player.pauseVideo === 'function') {
-        player.pauseVideo();
-    }
 
     window.open(url, 'previewWindow', 'width=800,height=860');
 }
