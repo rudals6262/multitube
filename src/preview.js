@@ -113,11 +113,11 @@ function prevSlide() {
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
         playSlideAtIndex(currentSlideIndex - 1);
-    } else if (currentSlideIndex === 0 && slideshowFinished) {
+    } else if (slideshowFinished) { // 모든 슬라이드가 다 재생된 후
         isPlaying = true;
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
-        playSlideAtIndex(slideQueue.length - 1);
+        playSlideAtIndex(slideQueue.length);
     }
 }
 

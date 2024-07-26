@@ -295,25 +295,30 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
         const rect = sliderTrack.getBoundingClientRect();
         let percentage = ((event.clientX - rect.left) / rect.width) * 100;
         percentage = Math.max(0, Math.min(percentage, 100));
-
+    
         if (isStart) {
             if (percentage >= parseFloat(endThumb.style.left)) {
                 percentage = parseFloat(endThumb.style.left) - (1 / videoDuration * 100);
             }
+            thumb.style.left = `${percentage}%`;
+            updateSliderRange();
+            const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
+            const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
+            playSegment(startTime, endTime); // 슬라이더 레인지 영역 재생
         } else {
             if (percentage <= parseFloat(startThumb.style.left)) {
                 percentage = parseFloat(startThumb.style.left) + (1 / videoDuration * 100);
             }
             const endTime = (percentage / 100) * videoDuration;
             playSegment(endTime - 0.3, endTime).then(() => {
-                playSegment((parseFloat(startThumb.style.left) / 100) * videoDuration, endTime);
+                const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
+                playSegment(startTime, endTime);
             });
+            thumb.style.left = `${percentage}%`;
+            updateSliderRange();
         }
-
-        thumb.style.left = `${percentage}%`;
-        updateSliderRange();
     }
-
+   
     // 마우스 이벤트 처리 함수들
     function handleMoveStart(event) {
         moveThumb(startThumb, event, true);
@@ -354,7 +359,6 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
     updateSliderRange();
     updateCurrentTimeIndicator();
 }
-
 
 function moveStart(event) {
     const startThumb = document.getElementById('startThumb');
@@ -540,7 +544,8 @@ function handleButtonClick(e) {
 }
 
 function handlePreviewClick() {
-    if (!Array.isArray(slideQueue) || slideQueue.length === 0) {
+    const slides = getSlideQueue(); // slideQueue 대신 getSlideQueue() 사용
+    if (!Array.isArray(slides) || slides.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }
