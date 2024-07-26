@@ -531,7 +531,7 @@ function handleButtonClick(e) {
 
 function handlePreviewClick() {
     const slidesContainer = document.querySelector('.slides');
-    const slides = slidesContainer.querySelectorAll('.slide');
+    const slides = slidesContainer.querySelectorAll('.slide:not(.empty-slide)');
     if (slides.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
@@ -635,6 +635,7 @@ function editSlide(slideId) {
 
     document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
     document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
+    document.querySelector('.empty-slide').classList.remove('selected');
     showMediabox();
 }
 
@@ -823,12 +824,9 @@ function addSlide() {
 
     makeSlidesSortable();
 
-    if (!document.querySelector('.empty-slide')) {
-        addEmptySlide();
-    }
-
     document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
-    document.querySelector('.empty-slide').classList.add('selected');
+    document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
+    document.querySelector('.empty-slide').classList.remove('selected');
 }
 
 function openPreviewWindow() {
