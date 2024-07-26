@@ -304,12 +304,14 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
             if (percentage <= parseFloat(startThumb.style.left)) {
                 percentage = parseFloat(startThumb.style.left) + (1 / videoDuration * 100);
             }
+            const endTime = (percentage / 100) * videoDuration;
+            playSegment(endTime - 0.3, endTime).then(() => {
+                playSegment((parseFloat(startThumb.style.left) / 100) * videoDuration, endTime);
+            });
         }
 
         thumb.style.left = `${percentage}%`;
         updateSliderRange();
-        playSegment((parseFloat(startThumb.style.left) / 100) * videoDuration, 
-                    (parseFloat(endThumb.style.left) / 100) * videoDuration);
     }
 
     // 마우스 이벤트 처리 함수들
@@ -339,12 +341,20 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
         document.addEventListener('mouseup', stopMove);
     });
 
+    // 슬라이더 레인지 클릭 이벤트 처리
+    sliderRange.addEventListener('click', function() {
+        const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
+        const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
+        playSegment(startTime, endTime);
+    });
+
     // 초기 위치 설정
     setThumbPosition(startThumb, startPercentage);
     setThumbPosition(endThumb, endPercentage);
     updateSliderRange();
     updateCurrentTimeIndicator();
 }
+
 
 function moveStart(event) {
     const startThumb = document.getElementById('startThumb');
@@ -530,9 +540,7 @@ function handleButtonClick(e) {
 }
 
 function handlePreviewClick() {
-    const slidesContainer = document.querySelector('.slides');
-    const slides = slidesContainer.querySelectorAll('.slide:not(.empty-slide)');
-    if (slides.length === 0) {
+    if (!Array.isArray(slideQueue) || slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }

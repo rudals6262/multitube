@@ -113,7 +113,7 @@ function prevSlide() {
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
         playSlideAtIndex(currentSlideIndex - 1);
-    } else if (slideshowFinished) {
+    } else if (currentSlideIndex === 0 && slideshowFinished) {
         isPlaying = true;
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
