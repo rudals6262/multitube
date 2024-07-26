@@ -117,7 +117,7 @@ function prevSlide() {
         isPlaying = true;
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
-        playSlideAtIndex(slideQueue.length);
+        playSlideAtIndex(slideQueue.length - 1);
     }
 }
 
