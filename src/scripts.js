@@ -541,7 +541,7 @@ function handlePreviewClick() {
 
 function handleSlideClick(slideId) {
     console.log(`Slide clicked: ${slideId}`);
-    // 여기에 슬라이드 클릭 시 수행할 작업을 추가합니다.
+    selectSlide(slideId);
 }
 
 function handleGroupTitleInput(event) {
@@ -563,7 +563,10 @@ function limitTextareaLines(textarea, maxLines) {
 
 function editSlide(slideId) {
     const slideIndex = slideQueue.findIndex(slide => slide.id === slideId);
-    if (slideIndex === -1) return;
+    if (slideIndex === -1) {
+        console.error(`Slide with id ${slideId} not found.`);
+        return;
+    }
 
     const slide = slideQueue[slideIndex];
     currentEditingSlideIndex = slideIndex;

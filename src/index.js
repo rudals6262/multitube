@@ -31,7 +31,8 @@ import {
     formatDuration,
     playSlides,
     getSlideQueue,
-    handleSlideClick // 추가
+    handleSlideClick, // 추가
+    editSlide // 추가
 } from './scripts.js';
 
 let player;
@@ -81,7 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formatDuration,
         playSlides,
         getSlideQueue,
-        handleSlideClick // 추가
+        handleSlideClick, // 추가
+        editSlide // 추가
     });
 
     const previewButton = document.querySelector('.preview-btn');
