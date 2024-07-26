@@ -1,3 +1,4 @@
+import './styles.css';
 import {
     addVideoInputFields,
     addImageInputFields,
@@ -29,8 +30,7 @@ import {
     updateSlide,
     formatDuration,
     playSlides,
-    getSlideQueue,
-    slideQueue
+    getSlideQueue
 } from './scripts.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -74,9 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const previewButton = document.querySelector('.preview-btn');
-    // Remove any existing event listeners
     previewButton.removeEventListener('click', handlePreviewClick);
-    // Add the event listener
     previewButton.addEventListener('click', handlePreviewClick);
 
     document.querySelector('.media-select').addEventListener('click', resetMediabox);
@@ -109,4 +107,3 @@ function handlePreviewClick() {
 function onYouTubeIframeAPIReady() {
     console.log('YouTube IFrame API is ready');
 }
-
