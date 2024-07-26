@@ -113,6 +113,11 @@ function prevSlide() {
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
         playSlideAtIndex(currentSlideIndex - 1);
+    } else if (slideshowFinished) {
+        isPlaying = true;
+        slideshowFinished = false;
+        document.getElementById('overlayPlayButton').style.display = 'none';
+        playSlideAtIndex(slideQueue.length - 1);
     }
 }
 
@@ -138,7 +143,7 @@ function updateButtonStates() {
     const nextButton = document.getElementById('nextSlideButton');
 
     if (prevButton) {
-        prevButton.disabled = currentSlideIndex === 0;
+        prevButton.disabled = currentSlideIndex === 0 && !slideshowFinished;
     }
 
     if (nextButton) {

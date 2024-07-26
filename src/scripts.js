@@ -1006,6 +1006,7 @@ function selectSlide(slideId) {
     }
     document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
     document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
+    document.querySelector('.empty-slide').classList.remove('selected');
     editSlide(slideId);
 }
 
