@@ -113,7 +113,7 @@ function prevSlide() {
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
         playSlideAtIndex(currentSlideIndex - 1);
-    } else if (currentSlideIndex === 0) { // 슬라이드쇼가 종료되었을 때
+    } else if (currentSlideIndex === 0) {
         isPlaying = true;
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';

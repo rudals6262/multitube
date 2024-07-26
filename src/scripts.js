@@ -847,7 +847,7 @@ function openPreviewWindow() {
 
     console.log("Opening preview. Current slideQueue:", slideQueue);
 
-    if (!slideQueue || slideQueue.length === 0) {
+    if (slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }
