@@ -544,13 +544,12 @@ function handleButtonClick(e) {
 }
 
 function handlePreviewClick() {
-    if (!Array.isArray(slideQueue) || slideQueue.length === 0) {
+    if (!slideQueue || slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }
     openPreviewWindow();
 }
-
 
 function handleSlideClick(slideId) {
     console.log(`Slide clicked: ${slideId}`);
@@ -848,7 +847,7 @@ function openPreviewWindow() {
 
     console.log("Opening preview. Current slideQueue:", slideQueue);
 
-    if (!Array.isArray(slideQueue) || slideQueue.length === 0) {
+    if (!slideQueue || slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }

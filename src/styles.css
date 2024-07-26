@@ -288,6 +288,17 @@ body {
     outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
 }
 
+/* .blink 클래스 추가 */
+.blink {
+    animation: blink-animation 1s steps(2, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+
 .empty-slide {
     width: 90px;
     height: 60px;

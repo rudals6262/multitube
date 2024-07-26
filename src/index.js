@@ -39,11 +39,10 @@ let player;
 
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
-    
+
     if (window.YT) {
         onYouTubeIframeAPIReady();
     } else {
-        // YouTube IFrame API를 동적으로 로드합니다.
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -82,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formatDuration,
         playSlides,
         getSlideQueue,
-        handleSlideClick, // 추가
-        editSlide // 추가
+        handleSlideClick,
+        editSlide
     });
 
     const previewButton = document.querySelector('.preview-btn');
@@ -116,10 +115,25 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', updateLayout);
 
     updateLayout();
+
+    // 빈 슬라이드에 .slide.selected 클래스 깜빡이게 하기
+    const emptySlide = document.querySelector('.empty-slide');
+    if (emptySlide) {
+        emptySlide.classList.add('selected');
+        const blinkInterval = setInterval(() => {
+            emptySlide.classList.toggle('blink');
+        }, 500);
+
+        emptySlide.addEventListener('click', () => {
+            clearInterval(blinkInterval);
+            emptySlide.classList.remove('blink');
+            emptySlide.classList.add('selected');
+        });
+    }
 });
 
 function handlePreviewClick() {
-    if (!Array.isArray(slideQueue) || slideQueue.length === 0) {
+    if (!slideQueue || slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }
