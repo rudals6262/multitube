@@ -544,13 +544,13 @@ function handleButtonClick(e) {
 }
 
 function handlePreviewClick() {
-    const slides = getSlideQueue(); // slideQueue 대신 getSlideQueue() 사용
-    if (!Array.isArray(slides) || slides.length === 0) {
+    if (!Array.isArray(slideQueue) || slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }
     openPreviewWindow();
 }
+
 
 function handleSlideClick(slideId) {
     console.log(`Slide clicked: ${slideId}`);
