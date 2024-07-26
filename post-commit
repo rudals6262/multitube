@@ -1,0 +1,6 @@
+#!/bin/sh
+# post-commit hook to push changes to GitHub
+
+branch=$(git symbolic-ref --short HEAD)
+git push origin "$branch"
+

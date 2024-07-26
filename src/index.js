@@ -33,6 +33,8 @@ import {
     getSlideQueue
 } from './scripts.js';
 
+let player;
+
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     
