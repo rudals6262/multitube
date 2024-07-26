@@ -145,8 +145,12 @@ function updateButtonStates() {
     }
 }
 
-function playSlides() {
-    startSlideshow();
+function closePreview() {
+    window.close();
+}
+
+function uploadContent() {
+    alert('업로드 기능은 구현되지 않았습니다.');
 }
 
 window.addEventListener('load', async function() {
@@ -178,7 +182,10 @@ window.addEventListener('load', async function() {
 
     await initializeYouTubePlayer();
     updateButtonStates();
-    startSlideshow();
 });
 
-window.playSlides = playSlides;
+window.startSlideshow = startSlideshow;
+window.prevSlide = prevSlide;
+window.nextSlide = nextSlide;
+window.closePreview = closePreview;
+window.uploadContent = uploadContent;
