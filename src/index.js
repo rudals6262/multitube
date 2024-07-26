@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function handlePreviewClick() {
     const slidesContainer = document.querySelector('.slides');
-    const slides = slidesContainer.querySelectorAll('.slide[data-slide]');
+    const slides = slidesContainer.querySelectorAll('.slide');
     if (slides.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;

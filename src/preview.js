@@ -41,6 +41,7 @@ async function initializeYouTubePlayer() {
 
 async function startSlideshow() {
     isPlaying = true;
+    currentSlideIndex = 0; // 첫 번째 슬라이드부터 시작
     document.getElementById('overlayPlayButton').style.display = 'none';
     playSlideAtIndex(currentSlideIndex);
 }
@@ -182,6 +183,7 @@ window.addEventListener('load', async function() {
 
     await initializeYouTubePlayer();
     updateButtonStates();
+    startSlideshow(); // 페이지 로드 시 슬라이드쇼 자동 시작
 });
 
 window.startSlideshow = startSlideshow;
