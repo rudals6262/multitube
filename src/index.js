@@ -35,8 +35,15 @@ import {
 
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
+    
     if (window.YT) {
         onYouTubeIframeAPIReady();
+    } else {
+        // YouTube IFrame API를 동적으로 로드합니다.
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
 
     Object.assign(window, {
@@ -74,20 +81,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const previewButton = document.querySelector('.preview-btn');
-    previewButton.removeEventListener('click', handlePreviewClick);
-    previewButton.addEventListener('click', handlePreviewClick);
+    if (previewButton) {
+        previewButton.removeEventListener('click', handlePreviewClick);
+        previewButton.addEventListener('click', handlePreviewClick);
+    }
 
-    document.querySelector('.media-select').addEventListener('click', resetMediabox);
+    const mediaSelectButton = document.querySelector('.media-select');
+    if (mediaSelectButton) {
+        mediaSelectButton.addEventListener('click', resetMediabox);
+    }
 
-    document.querySelector('.group-title input').addEventListener('input', (e) => {
-        validateInput(e.target, 50);
-    });
+    const groupTitleInput = document.querySelector('.group-title input');
+    if (groupTitleInput) {
+        groupTitleInput.addEventListener('input', (e) => {
+            validateInput(e.target, 50);
+        });
+    }
 
-    document.querySelector('.description textarea').addEventListener('input', (e) => {
-        validateInput(e.target, 200);
-        autoExpand(e.target);
-        limitTextareaLines(e.target, 5);
-    });
+    const descriptionTextarea = document.querySelector('.description textarea');
+    if (descriptionTextarea) {
+        descriptionTextarea.addEventListener('input', (e) => {
+            validateInput(e.target, 200);
+            autoExpand(e.target);
+            limitTextareaLines(e.target, 5);
+        });
+    }
 
     window.addEventListener('resize', updateLayout);
 
@@ -106,4 +124,27 @@ function handlePreviewClick() {
 
 function onYouTubeIframeAPIReady() {
     console.log('YouTube IFrame API is ready');
+    player = new YT.Player('videoPreview', {
+        height: '300',
+        width: '100%',
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+function onPlayerReady(event) {
+    console.log("Player is ready");
+    if (slideQueue[currentEditingSlideIndex]) {
+        const startTime = slideQueue[currentEditingSlideIndex].startTime;
+        event.target.seekTo(startTime);
+    }
+    setInterval(updateCurrentTimeIndicator, 100);
+}
+
+function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.PLAYING) {
+        updateCurrentTimeIndicator();
+    }
 }

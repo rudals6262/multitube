@@ -502,7 +502,8 @@ function setupEventListeners() {
         previewBtn.addEventListener('click', handlePreviewClick);
     }
 
-    document.querySelectorAll('.slide').forEach(slide => {
+    const slides = document.querySelectorAll('.slide');
+    slides.forEach(slide => {
         slide.removeEventListener('click', handleSlideClick);
         slide.addEventListener('click', () => handleSlideClick(slide.dataset.id));
     });
@@ -530,16 +531,12 @@ function handleButtonClick(e) {
 
 function handlePreviewClick() {
     const slidesContainer = document.querySelector('.slides');
-    const slides = slidesContainer.querySelectorAll('.slide:not(.empty-slide)');
+    const slides = slidesContainer.querySelectorAll('.slide[data-slide]');
     if (slides.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return;
     }
     openPreviewWindow();
-}
-
-function handleSlideClick(slideId) {
-    selectSlide(slideId);
 }
 
 function handleGroupTitleInput(event) {
@@ -549,8 +546,9 @@ function handleGroupTitleInput(event) {
 function handleDescriptionTextareaInput(event) {
     validateInput(event.target, 200);
     autoExpand(event.target);
-    limitTextareaLines(event.target, 5); // 최대 5줄 제한
+    limitTextareaLines(event.target, 5);
 }
+
 
 function limitTextareaLines(textarea, maxLines) {
     const lines = textarea.value.split('\n');
