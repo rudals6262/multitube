@@ -30,7 +30,8 @@ import {
     updateSlide,
     formatDuration,
     playSlides,
-    getSlideQueue
+    getSlideQueue,
+    handleSlideClick // 추가
 } from './scripts.js';
 
 let player;
@@ -79,7 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSlide,
         formatDuration,
         playSlides,
-        getSlideQueue
+        getSlideQueue,
+        handleSlideClick // 추가
     });
 
     const previewButton = document.querySelector('.preview-btn');

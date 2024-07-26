@@ -539,6 +539,11 @@ function handlePreviewClick() {
     openPreviewWindow();
 }
 
+function handleSlideClick(slideId) {
+    console.log(`Slide clicked: ${slideId}`);
+    // 여기에 슬라이드 클릭 시 수행할 작업을 추가합니다.
+}
+
 function handleGroupTitleInput(event) {
     validateInput(event.target, 50);
 }
@@ -548,7 +553,6 @@ function handleDescriptionTextareaInput(event) {
     autoExpand(event.target);
     limitTextareaLines(event.target, 5);
 }
-
 
 function limitTextareaLines(textarea, maxLines) {
     const lines = textarea.value.split('\n');
