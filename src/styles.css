@@ -288,7 +288,21 @@ body {
     outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
 }
 
-/* .empty-slide.selected에 적용될 blink-effect 클래스 */
+/* 기본 .empty-slide 스타일 */
+.empty-slide {
+    width: 90px;
+    height: 60px;
+    background-color: #ccc;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: 2px;
+    flex: none;
+}
+
+/* .empty-slide.selected에만 적용될 blink-effect 클래스 */
 .empty-slide.selected.blink-effect {
     outline: 3px solid #ff6f00;
     animation: fade-blink 1.5s ease-in-out forwards 3;
@@ -308,19 +322,6 @@ body {
         outline-color: transparent;
         opacity: 0;
     }
-}
-
-.empty-slide {
-    width: 90px;
-    height: 60px;
-    background-color: #ccc;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin: 2px;  /* 여백 추가 */
-    flex: none;  /* 추가: 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
 }
 
 .empty-slide.selected {
