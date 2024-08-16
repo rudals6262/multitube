@@ -134,6 +134,7 @@ function nextSlide() {
 function finishSlideshow() {
     isPlaying = false;
     slideshowFinished = true;
+    currentSlideIndex = slideQueue.length - 1; // 마지막 슬라이드의 인덱스로 설정
     player.pauseVideo();
     document.getElementById('overlayPlayButton').style.display = 'flex';
     updateButtonStates();
