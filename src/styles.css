@@ -283,11 +283,6 @@ body {
     flex: none;  /* 추가: 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
 }
 
-.slide.selected {
-    outline: 3px solid #ff6f00;
-    outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
-}
-
 /* 기본 .empty-slide 스타일 */
 .empty-slide {
     width: 90px;
