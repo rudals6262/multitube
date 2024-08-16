@@ -288,24 +288,30 @@ body {
     outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
 }
 
+/* .empty-slide.selected에 아웃라인 추가 및 blink 애니메이션 적용 */
 .empty-slide.selected {
-    outline: 3px solid orange;
-    animation: fade-blink 1.5s ease-in-out forwards 3;
+    outline: 3px solid #ff6f00;
+    animation: fade-blink 1.5s ease-in-out forwards;
 }
 
 @keyframes fade-blink {
     0% {
-        outline-color: orange;
+        outline-color: #ff6f00;
         opacity: 1;
     }
     50% {
-        outline-color: orange;
+        outline-color: #ff6f00;
         opacity: 0.5;
     }
     100% {
         outline-color: transparent;
         opacity: 0;
     }
+}
+
+.empty-slide.blink-stop {
+    animation: none; /* blink 애니메이션 멈추기 */
+    outline-color: transparent; /* 효과 종료 후 완전히 투명하게 */
 }
 
 .empty-slide {

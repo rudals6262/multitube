@@ -126,13 +126,13 @@ document.addEventListener('DOMContentLoaded', () => {
             blinkCount++;
             if (blinkCount >= 3) { // 3번만 blink 애니메이션 적용
                 clearInterval(blinkInterval);
-                emptySlide.classList.remove('selected');
+                emptySlide.classList.add('blink-stop');
             }
         }, 1500); // 1.5초마다 blink 애니메이션
 
         emptySlide.addEventListener('click', () => {
             clearInterval(blinkInterval); // 클릭하면 즉시 애니메이션 멈추기
-            emptySlide.classList.remove('selected');
+            emptySlide.classList.add('blink-stop');
             document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
             emptySlide.classList.add('selected');
             resetMediabox();
