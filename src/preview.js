@@ -46,7 +46,7 @@ async function startSlideshow() {
     playSlideAtIndex(currentSlideIndex);
 }
 
-function playSlideAtIndex(index) {
+function playSlideAtIndex(index, fromPrevButton = false) {
     clearTimeout(currentSlideTimeout);
     if (index < 0 || index >= slideQueue.length) {
         finishSlideshow();
@@ -62,13 +62,13 @@ function playSlideAtIndex(index) {
     updateButtonStates();
 
     if (slide.type === 'video') {
-        playVideoSlide(slide);
+        playVideoSlide(slide, fromPrevButton);
     } else if (slide.type === 'image') {
-        playImageSlide(slide);
+        playImageSlide(slide, fromPrevButton);
     }
 }
 
-function playVideoSlide(slide) {
+function playVideoSlide(slide, fromPrevButton) {
     const { videoId, startTime, endTime } = slide;
     document.querySelector('.video-container').style.display = 'block';
     document.getElementById('imageContainer').style.display = 'none';
@@ -81,16 +81,18 @@ function playVideoSlide(slide) {
 
     player.playVideo();
 
-    currentSlideTimeout = setTimeout(() => {
-        if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-            playSlideAtIndex(currentSlideIndex + 1);
-        } else {
-            finishSlideshow();
-        }
-    }, (endTime - startTime) * 1000);
+    if (!fromPrevButton) {
+        currentSlideTimeout = setTimeout(() => {
+            if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
+                playSlideAtIndex(currentSlideIndex + 1);
+            } else {
+                finishSlideshow();
+            }
+        }, (endTime - startTime) * 1000);
+    }
 }
 
-function playImageSlide(slide) {
+function playImageSlide(slide, fromPrevButton) {
     const { imageUrl, duration } = slide;
     document.querySelector('.video-container').style.display = 'none';
     document.getElementById('imageContainer').style.display = 'flex';
@@ -98,27 +100,28 @@ function playImageSlide(slide) {
     const previewImage = document.getElementById('previewImage');
     previewImage.src = imageUrl;
 
-    currentSlideTimeout = setTimeout(() => {
-        if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-            playSlideAtIndex(currentSlideIndex + 1);
-        } else {
-            finishSlideshow();
-        }
-    }, duration * 1000);
+    if (!fromPrevButton) {
+        currentSlideTimeout = setTimeout(() => {
+            if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
+                playSlideAtIndex(currentSlideIndex + 1);
+            } else {
+                finishSlideshow();
+            }
+        }, duration * 1000);
+    }
 }
 
 function prevSlide() {
-    if (currentSlideIndex > 0) {
+    if (currentSlideIndex > 0 || slideshowFinished) {
         isPlaying = true;
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
-        playSlideAtIndex(currentSlideIndex - 1);
-    } else if (slideshowFinished) {
-        // 슬라이드쇼가 끝나고 재생 버튼이 등장한 상태에서 < 버튼을 누르면 정확하게 마지막 슬라이드 재생
-        isPlaying = true;
-        slideshowFinished = false;
-        document.getElementById('overlayPlayButton').style.display = 'none';
-        playSlideAtIndex(slideQueue.length - 1); // 정확하게 마지막 슬라이드 재생
+        
+        if (slideshowFinished) {
+            playSlideAtIndex(slideQueue.length - 1, true);
+        } else {
+            playSlideAtIndex(currentSlideIndex - 1, true);
+        }
     }
 }
 
