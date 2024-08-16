@@ -118,7 +118,7 @@ function prevSlide() {
         isPlaying = true;
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
-        playSlideAtIndex(slideQueue.length - 1); // 마지막 슬라이드 재생
+        playSlideAtIndex(slideQueue.length); // 마지막 슬라이드 재생
     }
 }
 
