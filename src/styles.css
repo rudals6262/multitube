@@ -288,27 +288,23 @@ body {
     outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
 }
 
-/* .empty-slide.selected에 아웃라인 추가 및 breath 애니메이션 적용 */
+/* .empty-slide.selected에 아웃라인 추가 및 blink 애니메이션 적용 */
 .empty-slide.selected {
     outline: 3px solid orange;
-    animation: breath-outline 1.5s ease-in-out forwards;
+    animation: blink-outline 0.5s steps(2, start) infinite;
 }
 
-@keyframes breath-outline {
-    0%, 100% {
-        outline-width: 3px;
-        outline-color: orange;
-        opacity: 1;
-    }
+@keyframes blink-outline {
     50% {
-        outline-width: 6px;
+        outline-color: transparent;
+    }
+    100% {
         outline-color: orange;
-        opacity: 0.7;
     }
 }
 
-.empty-slide.breath-stop {
-    animation: none; /* breath 애니메이션 멈추기 */
+.empty-slide.blink-stop {
+    animation: none; /* blink 애니메이션 멈추기 */
     outline-width: 3px;
     outline-color: orange;
 }
