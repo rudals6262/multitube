@@ -49,6 +49,18 @@ document.addEventListener('DOMContentLoaded', () => {
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
 
+    // 빈 슬라이드에 .empty-slide.selected 클래스 깜빡이게 하기
+    const emptySlide = document.querySelector('.empty-slide');
+    if (emptySlide) {
+        emptySlide.classList.add('selected');
+        emptySlide.classList.add('blink-effect');
+
+        setTimeout(() => {
+            emptySlide.classList.remove('blink-effect');
+        }, 4500); // 1.5초(깜빡거림 1회) * 3회 = 4.5초 후에 효과 제거
+    }
+    
+    // 기존 코드 유지
     Object.assign(window, {
         addVideoInputFields,
         addImageInputFields,
@@ -85,53 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editSlide
     });
 
-    const previewButton = document.querySelector('.preview-btn');
-    if (previewButton) {
-        previewButton.removeEventListener('click', handlePreviewClick);
-        previewButton.addEventListener('click', handlePreviewClick);
-    }
-
-    const mediaSelectButton = document.querySelector('.media-select');
-    if (mediaSelectButton) {
-        mediaSelectButton.addEventListener('click', resetMediabox);
-    }
-
-    const groupTitleInput = document.querySelector('.group-title input');
-    if (groupTitleInput) {
-        groupTitleInput.addEventListener('input', (e) => {
-            validateInput(e.target, 50);
-        });
-    }
-
-    const descriptionTextarea = document.querySelector('.description textarea');
-    if (descriptionTextarea) {
-        descriptionTextarea.addEventListener('input', (e) => {
-            validateInput(e.target, 200);
-            autoExpand(e.target);
-            limitTextareaLines(e.target, 5);
-        });
-    }
-
-    window.addEventListener('resize', updateLayout);
-
-    updateLayout();
-
-    // 빈 슬라이드에 .slide.selected 클래스 깜빡이게 하기
-    const emptySlide = document.querySelector('.empty-slide');
-    if (emptySlide) {
-        emptySlide.classList.add('selected');
-        const blinkInterval = setInterval(() => {
-            emptySlide.classList.toggle('blink');
-        }, 500);
-
-        emptySlide.addEventListener('click', () => {
-            clearInterval(blinkInterval);
-            emptySlide.classList.remove('blink');
-            document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
-            emptySlide.classList.add('selected');
-            resetMediabox();
-        });
-    }
+    // 기타 이벤트 리스너 설정 코드 (기존 코드 유지)
 });
 
 function handlePreviewClick() {

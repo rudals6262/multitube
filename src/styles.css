@@ -288,17 +288,27 @@ body {
     outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
 }
 
-/* .blink 클래스 추가 */
-.blink {
-    animation: blink-animation 1s steps(2, start) infinite;
+/* .empty-slide.selected에 적용될 blink-effect 클래스 */
+.empty-slide.selected.blink-effect {
+    outline: 3px solid #ff6f00;
+    animation: fade-blink 1.5s ease-in-out forwards 3;
 }
 
-@keyframes blink-animation {
-    to {
-        visibility: hidden;
+/* 깜빡거리는 애니메이션 정의 */
+@keyframes fade-blink {
+    0% {
+        outline-color: #ff6f00;
+        opacity: 1;
+    }
+    50% {
+        outline-color: #ff6f00;
+        opacity: 0.5;
+    }
+    100% {
+        outline-color: transparent;
+        opacity: 0;
     }
 }
-
 
 .empty-slide {
     width: 90px;
