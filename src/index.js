@@ -116,15 +116,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateLayout();
 
-    // 빈 슬라이드에 .empty-slide.selected 클래스 깜빡이게 하기
+    // 빈 슬라이드에 .slide.selected 클래스 깜빡이게 하기
     const emptySlide = document.querySelector('.empty-slide');
     if (emptySlide) {
         emptySlide.classList.add('selected');
-        emptySlide.classList.add('blink-effect');
+        
+        // 깜빡거림 3회 완료 후 효과 제거
+        setTimeout(() => {
+            emptySlide.classList.remove('selected');
+            emptySlide.querySelector('.outline-effect').style.animation = 'none';
+        }, 4500); // 1.5s * 3번 깜빡인 후
 
-        // 애니메이션 종료 후 blink-effect 클래스 제거
-        emptySlide.addEventListener('animationend', () => {
-            emptySlide.classList.remove('blink-effect');
+        emptySlide.addEventListener('click', () => {
+            emptySlide.classList.remove('selected');
+            emptySlide.querySelector('.outline-effect').style.animation = 'none';
+            document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
+            emptySlide.classList.add('selected');
+            resetMediabox();
         });
     }
 });
