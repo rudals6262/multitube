@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateLayout();
 
-    // 빈 슬라이드에 .empty-slide.selected 아웃라인 3번만 깜빡이게 하기
+    // 빈 슬라이드에 .empty-slide.selected 아웃라인 3번만 breath 애니메이션 적용
     const emptySlide = document.querySelector('.empty-slide');
     if (emptySlide) {
         emptySlide.classList.add('selected');
@@ -124,15 +124,17 @@ document.addEventListener('DOMContentLoaded', () => {
         let blinkCount = 0;
         const blinkInterval = setInterval(() => {
             blinkCount++;
-            if (blinkCount >= 3) { // 3번만 깜빡이기
+            if (blinkCount >= 3) { // 3번만 breath 애니메이션 적용
                 clearInterval(blinkInterval);
                 emptySlide.classList.remove('selected');
+                emptySlide.classList.add('breath-stop');
             }
-        }, 1500); // 1.5초마다 한번씩 깜빡이기 (pulse 애니메이션 3번 지속)
+        }, 1500); // 1.5초마다 breath 애니메이션
 
         emptySlide.addEventListener('click', () => {
-            clearInterval(blinkInterval); // 클릭하면 깜빡임 멈추기
+            clearInterval(blinkInterval); // 클릭하면 즉시 애니메이션 멈추기
             emptySlide.classList.remove('selected');
+            emptySlide.classList.add('breath-stop');
             document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
             emptySlide.classList.add('selected');
             resetMediabox();
