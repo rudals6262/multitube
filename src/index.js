@@ -127,13 +127,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         emptySlide.addEventListener('click', () => {
             clearInterval(blinkInterval); // 클릭하면 깜빡임 멈추기
-            emptySlide.classList.remove('selected');
+            emptySlide.classList.remove('selected'); // 깜빡거림 멈추고 selected 클래스 제거
             document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
             emptySlide.classList.add('selected');
             resetMediabox();
         });
     }
 });
+
 
 function handlePreviewClick() {
     const slidesContainer = document.querySelector('.slides');

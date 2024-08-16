@@ -289,6 +289,7 @@ body {
 }
 
 /* .empty-slide.selected에 아웃라인 추가 */
+/* .empty-slide.selected에 아웃라인 추가 */
 .empty-slide.selected {
     outline: 3px solid orange;
     animation: blink-outline 1s steps(2, start) infinite;
@@ -299,7 +300,6 @@ body {
         outline-color: transparent;
     }
 }
-
 
 
 .empty-slide {
