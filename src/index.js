@@ -116,11 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateLayout();
 
-    // 빈 슬라이드가 처음 3번만 깜빡이도록 설정
+    // 빈 슬라이드에 .empty-slide.selected 아웃라인 3번만 blink 애니메이션 적용
     const emptySlide = document.querySelector('.empty-slide');
 
     if (emptySlide) {
-        emptySlide.classList.add('selected');
+        emptySlide.classList.add('selected'); // empty-slide에 selected 추가
 
         let blinkCount = 0;
         const blinkInterval = setInterval(() => {

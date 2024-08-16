@@ -304,7 +304,7 @@ body {
         opacity: 0.5;
     }
     100% {
-        outline-color: #ff6f00;
+        outline-color: transparent;
         opacity: 0;
     }
 }
@@ -325,7 +325,7 @@ body {
     cursor: pointer;
     margin: 2px;  /* 여백 추가 */
     flex: none;  /* 추가: 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
-    position: relative;
+    outline: none;
 }
 
 .empty-slide.selected {
