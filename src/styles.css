@@ -290,8 +290,8 @@ body {
 
 /* .empty-slide.selected에 아웃라인 추가 및 blink 애니메이션 적용 */
 .empty-slide.selected {
-    outline: 3px solid orange;
-    animation: blink-outline 0.5s steps(2, start) infinite;
+    outline: 3px solid #ff6f00;
+    animation: blink-outline 1s steps(2, start) infinite;
 }
 
 @keyframes blink-outline {
@@ -299,14 +299,14 @@ body {
         outline-color: transparent;
     }
     100% {
-        outline-color: orange;
+        outline-color: #ff6f00;
     }
 }
 
 .empty-slide.blink-stop {
     animation: none; /* blink 애니메이션 멈추기 */
     outline-width: 3px;
-    outline-color: orange;
+    outline-color: #ff6f00;
 }
 
 .empty-slide {
