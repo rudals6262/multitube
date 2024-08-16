@@ -114,11 +114,11 @@ function prevSlide() {
         document.getElementById('overlayPlayButton').style.display = 'none';
         playSlideAtIndex(currentSlideIndex - 1);
     } else if (slideshowFinished) {
-        // 슬라이드쇼가 끝나고 재생 버튼이 등장한 상태에서 < 버튼을 누르면 마지막 슬라이드 재생
+        // 슬라이드쇼가 끝나고 재생 버튼이 등장한 상태에서 < 버튼을 누르면 정확하게 마지막 슬라이드 재생
         isPlaying = true;
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
-        playSlideAtIndex(slideQueue.length); // 마지막 슬라이드 재생
+        playSlideAtIndex(slideQueue.length - 1); // 정확하게 마지막 슬라이드 재생
     }
 }
 
