@@ -31,6 +31,7 @@ body {
 
 .container {
     margin-top: 20px;
+    margin-top: 20px;
     width: 100%;
     max-width: 900px;
     min-height: 38px;
@@ -287,7 +288,18 @@ body {
     outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
 }
 
-/* 기본 empty-slide 스타일 */
+/* .blink 클래스 추가 */
+.blink {
+    animation: blink-animation 1s steps(2, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+
+
 .empty-slide {
     width: 90px;
     height: 60px;
@@ -298,34 +310,12 @@ body {
     align-items: center;
     cursor: pointer;
     margin: 2px;  /* 여백 추가 */
-    flex: none;  /* 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
-    outline: none; /* 기본적으로 outline 없음 */
+    flex: none;  /* 추가: 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
 }
 
-/* .empty-slide.selected에 아웃라인 추가 및 blink 애니메이션 적용 */
 .empty-slide.selected {
     outline: 3px solid #ff6f00;
-    animation: fade-blink 1.5s ease-in-out forwards 3;
-}
-
-@keyframes fade-blink {
-    0% {
-        outline-color: #ff6f00;
-        opacity: 1;
-    }
-    50% {
-        outline-color: #ff6f00;
-        opacity: 0.5;
-    }
-    100% {
-        outline-color: transparent;
-        opacity: 0;
-    }
-}
-
-.empty-slide.blink-stop {
-    animation: none; /* blink 애니메이션 멈추기 */
-    outline-color: transparent; /* 효과 종료 후 완전히 투명하게 */
+    outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
 }
 
 .empty-slide .plus-sign {
@@ -371,7 +361,7 @@ body {
 }
 
 .slide.active {
-    border-color: #ff6f00;
+    border-color: #ff6f00;;
 }
 
 .time-slider-wrapper {
@@ -512,7 +502,7 @@ body {
 .slider-right-thumb {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    margin-left: -1px;
+    margin-left:-10px;
 }
 
 .current-time-indicator {

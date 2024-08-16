@@ -116,26 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateLayout();
 
-    // 빈 슬라이드에 .empty-slide.selected 아웃라인 3번만 blink 애니메이션 적용
+    // 빈 슬라이드에 .slide.selected 클래스 깜빡이게 하기
     const emptySlide = document.querySelector('.empty-slide');
-
     if (emptySlide) {
-        emptySlide.classList.add('selected'); // empty-slide에 selected 추가
-
-        let blinkCount = 0;
+        emptySlide.classList.add('selected');
         const blinkInterval = setInterval(() => {
-            blinkCount++;
-            if (blinkCount >= 3) {
-                clearInterval(blinkInterval);
-                emptySlide.classList.remove('selected');
-                emptySlide.classList.add('blink-stop');
-            }
-        }, 1500); // 1.5초마다 blink 애니메이션
+            emptySlide.classList.toggle('blink');
+        }, 500);
 
         emptySlide.addEventListener('click', () => {
-            clearInterval(blinkInterval); // 클릭하면 즉시 애니메이션 멈추기
-            emptySlide.classList.remove('selected');
-            emptySlide.classList.add('blink-stop');
+            clearInterval(blinkInterval);
+            emptySlide.classList.remove('blink');
             document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
             emptySlide.classList.add('selected');
             resetMediabox();
