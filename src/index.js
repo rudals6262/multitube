@@ -120,14 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const emptySlide = document.querySelector('.empty-slide');
     if (emptySlide) {
         emptySlide.classList.add('selected');
-        const outlineEffect = emptySlide.querySelector('.outline-effect');
-        if (outlineEffect) {
-            outlineEffect.classList.add('blink-effect');
+        emptySlide.classList.add('blink-effect');
 
-            setTimeout(() => {
-                outlineEffect.classList.remove('blink-effect');
-            }, 4500);
-        }
+        // 애니메이션 종료 후 blink-effect 클래스 제거
+        emptySlide.addEventListener('animationend', () => {
+            emptySlide.classList.remove('blink-effect');
+        });
     }
 });
 
