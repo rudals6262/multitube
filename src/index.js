@@ -116,25 +116,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateLayout();
 
-    // 빈 슬라이드에 .empty-slide.selected 아웃라인 깜빡이게 하기
+    // 빈 슬라이드에 .empty-slide.selected 아웃라인 3번만 깜빡이게 하기
     const emptySlide = document.querySelector('.empty-slide');
     if (emptySlide) {
         emptySlide.classList.add('selected');
 
+        let blinkCount = 0;
         const blinkInterval = setInterval(() => {
-            emptySlide.classList.toggle('selected');
-        }, 1000); // 1초 간격으로 아웃라인 깜빡이게 설정
+            blinkCount++;
+            if (blinkCount >= 3) { // 3번만 깜빡이기
+                clearInterval(blinkInterval);
+                emptySlide.classList.remove('selected');
+            }
+        }, 1500); // 1.5초마다 한번씩 깜빡이기 (pulse 애니메이션 3번 지속)
 
         emptySlide.addEventListener('click', () => {
             clearInterval(blinkInterval); // 클릭하면 깜빡임 멈추기
-            emptySlide.classList.remove('selected'); // 깜빡거림 멈추고 selected 클래스 제거
+            emptySlide.classList.remove('selected');
             document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
             emptySlide.classList.add('selected');
             resetMediabox();
         });
     }
 });
-
 
 function handlePreviewClick() {
     const slidesContainer = document.querySelector('.slides');
