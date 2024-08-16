@@ -289,30 +289,36 @@ body {
 }
 
 /* .empty-slide.selected에 아웃라인 추가 및 blink 애니메이션 적용 */
-.empty-slide.selected {
-    outline: 3px solid #ff6f00;
+.empty-slide.selected::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 3px solid #ff6f00;
     animation: fade-blink 1.5s ease-in-out infinite;
+    pointer-events: none;
 }
 
 @keyframes fade-blink {
     0% {
-        outline-color: transparent;
+        border-color: transparent;
         opacity: 0;
     }
     10% {
-        outline-color: #ff6f00;
+        border-color: #ff6f00;
         opacity: 1;
     }
     100% {
-        outline-color: #ff6f00;
+        border-color: #ff6f00;
         opacity: 0;
     }
 }
 
-.empty-slide.blink-stop {
+.empty-slide.blink-stop::after {
     animation: none; /* blink 애니메이션 멈추기 */
-    outline-width: 3px;
-    outline-color: #ff6f00;
+    border-color: #ff6f00;
 }
 
 .empty-slide {
