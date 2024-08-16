@@ -292,10 +292,10 @@ body {
 .empty-slide.selected::after {
     content: '';
     position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     border: 3px solid #ff6f00;
     animation: fade-blink 1.5s ease-in-out infinite;
     pointer-events: none;
@@ -319,6 +319,7 @@ body {
 .empty-slide.blink-stop::after {
     animation: none; /* blink 애니메이션 멈추기 */
     border-color: #ff6f00;
+    opacity: 1;
 }
 
 .empty-slide {
@@ -332,6 +333,7 @@ body {
     cursor: pointer;
     margin: 2px;  /* 여백 추가 */
     flex: none;  /* 추가: 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
+    position: relative;
 }
 
 .empty-slide.selected {
