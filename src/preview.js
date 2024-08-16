@@ -120,6 +120,9 @@ function prevSlide() {
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
         playSlideAtIndex(slideQueue.length - 1); // 마지막 슬라이드 재생
+    } else {
+        // 슬라이드쇼 도중에 처음 슬라이드에서 < 버튼을 누른 경우
+        playSlideAtIndex(currentSlideIndex);
     }
 }
 
