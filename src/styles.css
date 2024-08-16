@@ -291,7 +291,7 @@ body {
 /* .empty-slide.selected에 아웃라인 추가 및 blink 애니메이션 적용 */
 .empty-slide.selected {
     outline: 3px solid #ff6f00;
-    animation: fade-blink 1.5s ease-in-out forwards;
+    animation: fade-blink 1.5s ease-in-out forwards 3;
 }
 
 @keyframes fade-blink {
@@ -304,7 +304,7 @@ body {
         opacity: 0.5;
     }
     100% {
-        outline-color: transparent;
+        outline-color: #ff6f00;
         opacity: 0;
     }
 }
