@@ -295,12 +295,9 @@ body {
 }
 
 @keyframes blink-outline {
-    50% {
-        outline-color: transparent;
-    }
-    100% {
-        outline-color: #ff6f00;
-    }
+	0% {opacity: 0}
+	50%{opacity: 0}
+	0% {opacity: 1}
 }
 
 .empty-slide.blink-stop {
