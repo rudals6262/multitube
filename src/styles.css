@@ -291,13 +291,22 @@ body {
 /* .empty-slide.selected에 아웃라인 추가 및 blink 애니메이션 적용 */
 .empty-slide.selected {
     outline: 3px solid #ff6f00;
-    animation: blink-outline 1s steps(2, start) infinite;
+    animation: fade-blink 1.5s ease-in-out infinite;
 }
 
-@keyframes blink-outline {
-	0% {opacity: 0}
-	50%{opacity: 0}
-	0% {opacity: 1}
+@keyframes fade-blink {
+    0% {
+        outline-color: transparent;
+        opacity: 0;
+    }
+    10% {
+        outline-color: #ff6f00;
+        opacity: 1;
+    }
+    100% {
+        outline-color: #ff6f00;
+        opacity: 0;
+    }
 }
 
 .empty-slide.blink-stop {
