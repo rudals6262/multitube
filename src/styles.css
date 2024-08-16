@@ -31,7 +31,6 @@ body {
 
 .container {
     margin-top: 20px;
-    margin-top: 20px;
     width: 100%;
     max-width: 900px;
     min-height: 38px;
@@ -90,7 +89,7 @@ body {
 
 .mediabox, .container, .preview-button {
     width: 100%;
-    max-width: 100%; /* 최대 너비를 100%로 설정 */
+    max-width: 100%;
 }
 
 .mediabox {
@@ -118,7 +117,7 @@ body {
     transition: background 0.3s ease;
     padding: 10px 40px;
     width: auto;
-    min-width: 120px; /* 최소 너비 설정 */
+    min-width: 120px;
     text-align: center;
 }
 
@@ -160,7 +159,7 @@ body {
 .input-group .plus-minus-buttons {
     display: flex;
     gap: 5px;
-    flex-direction: row; /* Ensure the buttons are displayed side-by-side */
+    flex-direction: row;
 }
 
 .input-group .plus-minus-buttons button {
@@ -191,24 +190,24 @@ body {
 
 .media-select-container {
     display: flex;
-    justify-content: space-between; /* Buttons on either end */
+    justify-content: space-between;
     width: 100%;
     box-sizing: border-box;
-    align-items: center; /* Align vertically centered */
+    align-items: center;
 }
 
 .media-select-container .media-select {
     flex-grow: 1;
     position: relative;
     margin-right: auto;
-    justify-content: flex-start; /* Align media select button to the left */
+    justify-content: flex-start;
 }
 
 .media-select-container .confirm-buttons {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    justify-content: flex-end; /* Align confirm buttons to the right */
+    justify-content: flex-end;
     width: auto;
 }
 
@@ -233,27 +232,27 @@ body {
 
 .action-buttons .media-select {
     display: flex;
-    justify-content: flex-start; /* 좌측 정렬 */
+    justify-content: flex-start;
 }
 
 .action-buttons .confirm-buttons {
     display: flex;
     gap: 10px;
-    justify-content: flex-end; /* 우측 정렬 */
+    justify-content: flex-end;
     width: auto;
 }
 
 .group-btn {
     display: flex;
-    justify-content: space-between; /* 좌우로 정렬 */
-    width: 100%; /* 부모 요소의 너비 설정 */
+    justify-content: space-between;
+    width: 100%;
 }
 
 .preview-button {
     display: flex;
-    width: 100%; /* 부모 요소의 너비 설정 */
+    width: 100%;
     margin-top: 20px;
-    margin-bottom: 20px; /* 마진 추가 */
+    margin-bottom: 20px;
 }
 
 .preview-btn {
@@ -263,9 +262,9 @@ body {
     border: none;
     border-radius: 10px;
     transition: background 0.3s ease;
-    padding: 10px 30px; /* 세로 길이 늘리고 가로 길이 줄임 */
+    padding: 10px 30px;
     width: 100%;
-    min-width: 80px; /* 최소 너비 설정 */
+    min-width: 80px;
     text-align: center;
 }
 
@@ -279,17 +278,28 @@ body {
     height: 60px;
     border-radius: 10px;
     box-sizing: border-box;
-    margin: 2px;  /* 여백 추가 */
-    flex: none;  /* 추가: 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
+    margin: 2px;
+    flex: none;
 }
 
 .slide.selected {
     outline: 3px solid #ff6f00;
-    outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
+    outline-offset: 2px;
+}
+
+/* 아웃라인 효과를 위한 .outline-effect 클래스 */
+.outline-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    box-sizing: border-box;
+    pointer-events: none;
 }
 
 .empty-slide {
-    position: relative;
     width: 90px;
     height: 60px;
     background-color: #ccc;
@@ -299,47 +309,37 @@ body {
     align-items: center;
     cursor: pointer;
     margin: 2px;
+    position: relative;
     flex: none;
 }
 
 .empty-slide .outline-effect {
-    position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    border-radius: 13px;
-    pointer-events: none;
+    border: none;
 }
 
 .empty-slide.selected .outline-effect {
-    outline: 3px solid #ff6f00;
-}
-
-.empty-slide.selected .outline-effect.blink-effect {
+    border: 3px solid #ff6f00;
     animation: fade-blink 1.5s ease-in-out forwards 3;
 }
 
+/* 깜빡거리는 애니메이션 정의 */
 @keyframes fade-blink {
     0% {
+        border-color: #ff6f00;
         opacity: 1;
     }
     50% {
-        opacity: 0;
+        border-color: #ff6f00;
+        opacity: 0.5;
     }
     100% {
-        opacity: 1;
+        border-color: transparent;
+        opacity: 0;
     }
 }
 
-.empty-slide.selected {
-    outline: 3px solid #ff6f00;
-    outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
-}
-
-.empty-slide .plus-sign {
-    font-size: 24px;
-    color: #ffffff;
+.plus-sign {
+    z-index: 1;
 }
 
 .slides {
@@ -348,8 +348,8 @@ body {
     align-items: center;
     overflow-x: auto;
     gap: 10px;
-    padding: 5px;  /* 패딩 추가 */
-    box-sizing: border-box;  /* 박스 사이징 추가 */
+    padding: 5px;
+    box-sizing: border-box;
 }
 
 .slide img {
@@ -380,18 +380,17 @@ body {
 }
 
 .slide.active {
-    border-color: #ff6f00;;
+    border-color: #ff6f00;
 }
 
 .time-slider-wrapper {
     width: 100%;
     position: relative;
     height: 100px;
-    display: none; /* 초기에는 숨김 */
+    display: none;
     overflow-x: auto;
 }
 
-/* 타임슬라이더 컨테이너 */
 .time-slider-container {
     width: 100%;
     height: 90px;
@@ -409,26 +408,26 @@ body {
 
 /* Chrome, Safari, Edge, and Opera */
 .time-slider-container::-webkit-scrollbar {
-    height: 8px; /* 스크롤바 전체 높이 증가 */
+    height: 8px;
 }
 
 .time-slider-container::-webkit-scrollbar-track {
-    background: #ccc; /* 트랙 색상 */
-    height: 2px; /* 트랙 높이 */
+    background: #ccc;
+    height: 2px;
 }
 
 .time-slider-container::-webkit-scrollbar-thumb {
-    background: #fff; /* 썸 색상 */
-    height: 8px; /* 썸 높이를 스크롤바 전체 높이와 동일하게 */
-    border-radius: 4px; /* 썸 모서리 둥글게 */
+    background: #fff;
+    height: 8px;
+    border-radius: 4px;
 }
 
 .time-slider-container::-webkit-scrollbar-thumb:hover {
-    background: #eee; /* 호버 시 색상 */
+    background: #eee;
 }
 
 .time-slider-container::-webkit-scrollbar-button {
-    display: none; /* 좌우 버튼 제거 */
+    display: none;
 }
 
 .slider-track {
@@ -465,8 +464,8 @@ body {
     height: 54px;
     background-color: #ffbd8b;
     z-index: 1;
-    top: 50%; /* 부모 컨테이너의 중앙에 위치하도록 설정 */
-    transform: translateY(-50%); /* 정확한 중앙 정렬 */
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .slider-range::before, .slider-range::after {
@@ -479,11 +478,11 @@ body {
 }
 
 .slider-range::before {
-    top: -3px; /* 위쪽에 위치 */
+    top: -3px;
 }
 
 .slider-range::after {
-    bottom: -3px; /* 아래쪽에 위치 */
+    bottom: -3px;
 }
 
 .slider-left-thumb, .slider-right-thumb, .current-time-indicator {
@@ -521,13 +520,13 @@ body {
 .slider-right-thumb {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    margin-left:-10px;
+    margin-left: -10px;
 }
 
 .current-time-indicator {
     width: 8px;
     height: 70px;
     border-radius: 4px;
-    background-color:#ff6f00;
+    background-color: #ff6f00;
     z-index: 5;
 }
