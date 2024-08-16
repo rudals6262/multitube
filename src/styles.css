@@ -288,16 +288,18 @@ body {
     outline-offset: 2px;  /* 여백만큼 outline을 바깥으로 */
 }
 
-/* .blink 클래스 추가 */
-.blink {
-    animation: blink-animation 1s steps(2, start) infinite;
+/* .empty-slide.selected에 아웃라인 추가 */
+.empty-slide.selected {
+    outline: 3px solid orange;
+    animation: blink-outline 1s steps(2, start) infinite;
 }
 
-@keyframes blink-animation {
+@keyframes blink-outline {
     to {
-        visibility: hidden;
+        outline-color: transparent;
     }
 }
+
 
 
 .empty-slide {
