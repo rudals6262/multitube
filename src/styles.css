@@ -317,13 +317,13 @@ body {
     border: none;
 }
 
+/* .empty-slide.selected에 아웃라인 및 깜빡거리는 효과 추가 */
 .empty-slide.selected .outline-effect {
     border: 3px solid #ff6f00;
-    outline-offset: 2px; 
-    animation: fade-blink 1.5s ease-in-out forwards 3;
+    outline-offset: 2px;
+    animation: fade-blink 1.5s ease-in-out forwards 3; /* 깜빡거리는 효과는 처음에만 3번 실행 */
 }
 
-/* 깜빡거리는 애니메이션 정의 */
 @keyframes fade-blink {
     0% {
         border-color: #ff6f00;
@@ -339,7 +339,7 @@ body {
     }
 }
 
-.plus-sign {
+.empty-slide .plus-sign {
     z-index: 1;
     font-size: 24px;
     color: #ffffff;
