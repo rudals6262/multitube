@@ -523,7 +523,7 @@ body {
 .slider-right-thumb {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    margin-left: -10px;
+    margin-left: -1px;
 }
 
 .current-time-indicator {
