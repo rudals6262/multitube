@@ -331,7 +331,7 @@ body {
         box-shadow: 0 0 0 3px #ff6f00;
         opacity: 0;
     }
-    100% {
+    0% {
         box-shadow: 0 0 0 3px transparent;
         opacity: 1;
     }
