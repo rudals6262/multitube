@@ -290,7 +290,7 @@ body {
 
 /* .blink 클래스 추가 */
 .blink {
-    animation: blink 1s infinite;
+    animation: blink-animation 1s steps(2, start) infinite;
 }
 
 @keyframes blink-animation {
