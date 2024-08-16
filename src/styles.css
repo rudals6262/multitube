@@ -284,7 +284,6 @@ body {
 
 .slide.selected {
     outline: 3px solid #ff6f00;
-    outline-offset: 2px;
 }
 
 /* 아웃라인 효과를 위한 .outline-effect 클래스 */
@@ -319,21 +318,22 @@ body {
 
 /* .empty-slide.selected에 아웃라인 및 깜빡거리는 효과 추가 */
 .empty-slide.selected .outline-effect {
-    box-shadow: 0 0 0 2px #ff6f00; /* 2px 옵셋을 가진 아웃라인 효과 */
+    border: 3px solid #ff6f00;
+    box-sizing: border-box; /* outline-offset을 적용하기 위해 box-sizing을 지정 */
     animation: fade-blink 1.5s ease-in-out forwards 3; /* 깜빡거리는 효과는 처음에만 3번 실행 */
 }
 
 @keyframes fade-blink {
     0% {
-        box-shadow: 0 0 0 2px #ff6f00;
+        border-color: #ff6f00;
         opacity: 1;
     }
     50% {
-        box-shadow: 0 0 0 2px #ff6f00;
+        border-color: #ff6f00;
         opacity: 0.5;
     }
     100% {
-        box-shadow: 0 0 0 2px transparent;
+        border-color: transparent;
         opacity: 0;
     }
 }
