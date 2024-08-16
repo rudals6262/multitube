@@ -119,12 +119,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 빈 슬라이드에 .empty-slide.selected 클래스 깜빡이게 하기
     const emptySlide = document.querySelector('.empty-slide');
     if (emptySlide) {
-        emptySlide.classList.add('selected'); // selected 클래스 추가
-        emptySlide.classList.add('blink-effect'); // blink-effect 클래스 추가
+        emptySlide.classList.add('selected');
+        const outlineEffect = emptySlide.querySelector('.outline-effect');
+        if (outlineEffect) {
+            outlineEffect.classList.add('blink-effect');
 
-        setTimeout(() => {
-            emptySlide.classList.remove('blink-effect'); // 일정 시간이 지나면 blink 효과 제거
-        }, 4500); // 1.5초(깜빡거림 1회) * 3회 = 4.5초 후에 효과 제거
+            setTimeout(() => {
+                outlineEffect.classList.remove('blink-effect');
+            }, 4500);
+        }
     }
 });
 

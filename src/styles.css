@@ -283,8 +283,8 @@ body {
     flex: none;  /* 추가: 가로 스크롤바가 생기도록 슬라이드 크기 고정 */
 }
 
-/* 기본 .empty-slide 스타일 */
 .empty-slide {
+    position: relative;
     width: 90px;
     height: 60px;
     background-color: #ccc;
@@ -297,25 +297,33 @@ body {
     flex: none;
 }
 
-/* .empty-slide.selected에만 적용될 blink-effect 클래스 */
-.empty-slide.selected.blink-effect {
-    outline: 3px solid #ff6f00; /* 아웃라인에만 효과 적용 */
+.empty-slide .outline-effect {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 13px;
+    pointer-events: none;
+}
+
+.empty-slide.selected .outline-effect {
+    outline: 3px solid #ff6f00;
+}
+
+.empty-slide.selected .outline-effect.blink-effect {
     animation: fade-blink 1.5s ease-in-out forwards 3;
 }
 
-/* 깜빡거리는 애니메이션 정의 */
 @keyframes fade-blink {
     0% {
-        outline-color: #ff6f00;
         opacity: 1;
     }
     50% {
-        outline-color: #ff6f00;
-        opacity: 0.5;
+        opacity: 0;
     }
     100% {
-        outline-color: transparent;
-        opacity: 0;
+        opacity: 1;
     }
 }
 
