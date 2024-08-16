@@ -113,15 +113,14 @@ function prevSlide() {
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
         playSlideAtIndex(currentSlideIndex - 1);
-    } else if (slideshowFinished && currentSlideIndex === 0) {
-        // 슬라이드쇼가 종료된 후에 < 버튼을 눌렀을 때 마지막 슬라이드로 돌아가기
+    } else if (slideshowFinished) {
+        // 슬라이드쇼가 끝나고 재생 버튼이 등장한 상태에서 < 버튼을 누르면 마지막 슬라이드 재생
         isPlaying = true;
         slideshowFinished = false;
         document.getElementById('overlayPlayButton').style.display = 'none';
         playSlideAtIndex(slideQueue.length - 1); // 마지막 슬라이드 재생
     }
 }
-
 
 function nextSlide() {
     if (currentSlideIndex < slideQueue.length - 1) {
