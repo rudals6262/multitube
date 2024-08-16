@@ -325,7 +325,7 @@ body {
 @keyframes fade-blink {
     0% {
         box-shadow: 0 0 0 3px #ff6f00;
-        opacity: 0;
+        opacity: 1;
     }
     50% {
         box-shadow: 0 0 0 3px #ff6f00;
