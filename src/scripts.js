@@ -545,7 +545,7 @@ function handleButtonClick(e) {
 
 function handlePreviewClick() {
     if (!slideQueue || slideQueue.length === 0) {
-        console.warn('추가된 슬라이드가 없습니다. 슬라이드를 추가하세요.');
+        alert('추가된 슬라이드가 없습니다. 슬라이드를 추가하세요.');
         return;
     }
     openPreviewWindow();
@@ -779,7 +779,7 @@ function showMediaButtons() {
 
 function addSlide() {
     const videoLinkInput = document.getElementById('videoLink');
-    const videoLink = videoLinkInput.value.trim();
+    const videoLink = videoLinkInput ? videoLinkInput.value.trim() : '';
     let videoId, updatedUrl;
 
     if (videoLink) {
@@ -789,13 +789,18 @@ function addSlide() {
             videoId = player.getVideoData().video_id;
             updatedUrl = `https://www.youtube.com/watch?v=${videoId}`;
         } else {
-            console.error('유효한 동영상 링크가 없습니다.');
+            alert('유효한 동영상 링크가 없습니다. 링크를 입력하거나 유튜브 동영상을 선택하세요.');
             return;
         }
     }
 
     const startThumb = document.getElementById('startThumb');
     const endThumb = document.getElementById('endThumb');
+    if (!startThumb || !endThumb) {
+        alert('슬라이더 요소를 찾을 수 없습니다. 다시 시도해 주세요.');
+        return;
+    }
+
     const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
     const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
 
