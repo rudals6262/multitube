@@ -544,10 +544,8 @@ function handleButtonClick(e) {
 }
 
 function handlePreviewClick() {
-    const slidesContainer = document.querySelector('.slides');
-    const slides = slidesContainer.querySelectorAll('.slide:not(.empty-slide)');
-    if (slides.length === 0 && slideQueue.length === 0) {
-        alert('추가된 슬라이드가 없습니다.');
+    if (!slideQueue || slideQueue.length === 0) {
+        console.warn('추가된 슬라이드가 없습니다. 슬라이드를 추가하세요.');
         return;
     }
     openPreviewWindow();
@@ -780,9 +778,6 @@ function showMediaButtons() {
 }
 
 function addSlide() {
-    // 슬라이드 추가 시 슬라이드 큐에 슬라이드가 추가되고 있는지 확인하는 로그 추가
-    console.log("Adding new slide. Current slideQueue before addition:", JSON.stringify(slideQueue));
-    
     const videoLinkInput = document.getElementById('videoLink');
     const videoLink = videoLinkInput.value.trim();
     let videoId, updatedUrl;
@@ -794,6 +789,7 @@ function addSlide() {
             videoId = player.getVideoData().video_id;
             updatedUrl = `https://www.youtube.com/watch?v=${videoId}`;
         } else {
+            console.error('유효한 동영상 링크가 없습니다.');
             return;
         }
     }
@@ -814,14 +810,12 @@ function addSlide() {
         videoLink: updatedUrl
     });
 
-    console.log("Slide added. Current slideQueue after addition:", JSON.stringify(slideQueue));
+    console.log("Slide added. Current slideQueue:", JSON.stringify(slideQueue));
     
-    // 슬라이드가 제대로 추가되었는지 체크하는 로직을 추가
     const slidesContainer = document.querySelector('.slides');
     const newSlide = document.createElement('div');
     newSlide.className = 'slide';
     newSlide.dataset.id = slideId;
-
     newSlide.innerHTML = `
         <img src="https://img.youtube.com/vi/${videoId}/0.jpg" alt="Video Thumbnail" style="aspect-ratio: 16/9;">
         <div class="slide-close">&times;</div>
@@ -836,12 +830,12 @@ function addSlide() {
         slidesContainer.appendChild(newSlide);
     }
 
-    // 슬라이드 추가 후 이벤트 리스너가 제대로 설정되었는지 확인
     newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
         event.stopPropagation();
         removeSlide(slideId);
     });
 
+    updateSlideQueue();
     makeSlidesSortable();
 
     document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
@@ -1003,11 +997,11 @@ function getDragAfterElement(container, x) {
 
 function updateSlideQueue() {
     const slides = document.querySelectorAll('.slide:not(.empty-slide)');
-    const newQueue = Array.from(slides).map(slide => {
+    slideQueue = Array.from(slides).map(slide => {
         const slideId = slide.dataset.id;
         return slideQueue.find(item => item.id === slideId);
     });
-    slideQueue = newQueue;
+    console.log('Updated slideQueue:', slideQueue);
 }
 
 function updateSlideIndices() {
@@ -1139,19 +1133,6 @@ function getSlideQueue() {
     return slideQueue;
 }
 
-// main.js (주요 로직 코드 뒤에 추가)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then((registration) => {
-                console.log('Service Worker registered with scope:', registration.scope);
-            })
-            .catch((error) => {
-                console.error('Service Worker registration failed:', error);
-            });
-    });
-}
-
 // 기존 함수들 내보내기
 export {
     addVideoInputFields,
@@ -1185,5 +1166,5 @@ export {
     formatDuration,
     playSlides,
     getSlideQueue,
-    slideQueue // getSlideQueue 추가
+    slideQueue
 };
