@@ -780,26 +780,9 @@ function showMediaButtons() {
 }
 
 function addSlide() {
-    const videoLinkInput = document.getElementById('videoLink');
-    const videoLink = videoLinkInput.value.trim();
-    let videoId, updatedUrl;
-
-    if (videoLink) {
-        ({ videoId, updatedUrl } = extractVideoId(videoLink));
-    } else {
-        if (player && player.getVideoData && player.getVideoData().video_id) {
-            videoId = player.getVideoData().video_id;
-            updatedUrl = `https://www.youtube.com/watch?v=${videoId}`;
-        } else {
-            return;
-        }
-    }
-
-    const startThumb = document.getElementById('startThumb');
-    const endThumb = document.getElementById('endThumb');
-    const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
-    const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
-
+    // 슬라이드 추가 시 슬라이드 큐에 슬라이드가 추가되고 있는지 확인하는 로그 추가
+    console.log("Adding new slide. Current slideQueue before addition:", JSON.stringify(slideQueue));
+    
     const slideId = createUniqueSlideId();
     slideQueue.push({
         id: slideId,
@@ -811,12 +794,14 @@ function addSlide() {
         videoLink: updatedUrl
     });
 
-    console.log("Slide added. Current slideQueue:", JSON.stringify(slideQueue));
+    console.log("Slide added. Current slideQueue after addition:", JSON.stringify(slideQueue));
     
+    // 슬라이드가 제대로 추가되었는지 체크하는 로직을 추가
     const slidesContainer = document.querySelector('.slides');
     const newSlide = document.createElement('div');
     newSlide.className = 'slide';
     newSlide.dataset.id = slideId;
+
     newSlide.innerHTML = `
         <img src="https://img.youtube.com/vi/${videoId}/0.jpg" alt="Video Thumbnail" style="aspect-ratio: 16/9;">
         <div class="slide-close">&times;</div>
@@ -831,6 +816,7 @@ function addSlide() {
         slidesContainer.appendChild(newSlide);
     }
 
+    // 슬라이드 추가 후 이벤트 리스너가 제대로 설정되었는지 확인
     newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
         event.stopPropagation();
         removeSlide(slideId);
