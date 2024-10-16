@@ -783,6 +783,26 @@ function addSlide() {
     // 슬라이드 추가 시 슬라이드 큐에 슬라이드가 추가되고 있는지 확인하는 로그 추가
     console.log("Adding new slide. Current slideQueue before addition:", JSON.stringify(slideQueue));
     
+    const videoLinkInput = document.getElementById('videoLink');
+    const videoLink = videoLinkInput.value.trim();
+    let videoId, updatedUrl;
+
+    if (videoLink) {
+        ({ videoId, updatedUrl } = extractVideoId(videoLink));
+    } else {
+        if (player && player.getVideoData && player.getVideoData().video_id) {
+            videoId = player.getVideoData().video_id;
+            updatedUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        } else {
+            return;
+        }
+    }
+
+    const startThumb = document.getElementById('startThumb');
+    const endThumb = document.getElementById('endThumb');
+    const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
+    const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
+
     const slideId = createUniqueSlideId();
     slideQueue.push({
         id: slideId,
