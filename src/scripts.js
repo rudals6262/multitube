@@ -846,17 +846,21 @@ function addSlide() {
     document.querySelector('.empty-slide').classList.remove('selected');
 }
 
+let slideCheckAlertShown = false;
+
 function checkIfSlidesExist() {
     if (!slideQueue || slideQueue.length === 0) {
-        alert('추가된 슬라이드가 없습니다. 슬라이드를 추가하세요.');
+        if (!slideCheckAlertShown) { // 처음에만 알림을 띄움
+            alert('추가된 슬라이드가 없습니다. 슬라이드를 추가하세요.');
+            slideCheckAlertShown = true; // 알림을 한 번 띄운 후 true로 변경
+        }
         return false;
     }
+    slideCheckAlertShown = false; // 슬라이드가 있으면 다시 초기화
     return true;
 }
 
 function openPreviewWindow() {
-    if (!checkIfSlidesExist()) return;
-
     const groupTitle = document.querySelector('.group-title input').value;
     const description = document.querySelector('.description textarea').value;
 
@@ -1062,8 +1066,6 @@ function updateTicks(zoomFactor) {
 }
 
 function playSlides() {
-    if (!checkIfSlidesExist()) return;
-
     let currentSlideIndex = 0;
 
     function playNextSlide() {
