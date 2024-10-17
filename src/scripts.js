@@ -9,7 +9,6 @@ let currentEditingSlideIndex;
 let checkEndInterval;
 let slideIdCounter = 0;
 
-
 function createUniqueSlideId() {
     return `slide_${slideIdCounter++}`;
 }
@@ -545,8 +544,10 @@ function handleButtonClick(e) {
 }
 
 function handlePreviewClick() {
-    if (!checkIfSlidesExist()) return;
-
+    if (!slideQueue || slideQueue.length === 0) {
+        alert('추가된 슬라이드가 없습니다.');
+        return;
+    }
     openPreviewWindow();
 }
 
@@ -778,7 +779,7 @@ function showMediaButtons() {
 
 function addSlide() {
     const videoLinkInput = document.getElementById('videoLink');
-    const videoLink = videoLinkInput ? videoLinkInput.value.trim() : '';
+    const videoLink = videoLinkInput.value.trim();
     let videoId, updatedUrl;
 
     if (videoLink) {
@@ -788,18 +789,12 @@ function addSlide() {
             videoId = player.getVideoData().video_id;
             updatedUrl = `https://www.youtube.com/watch?v=${videoId}`;
         } else {
-            alert('유효한 동영상 링크가 없습니다. 링크를 입력하거나 유튜브 동영상을 선택하세요.');
             return;
         }
     }
 
     const startThumb = document.getElementById('startThumb');
     const endThumb = document.getElementById('endThumb');
-    if (!startThumb || !endThumb) {
-        alert('슬라이더 요소를 찾을 수 없습니다. 다시 시도해 주세요.');
-        return;
-    }
-
     const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
     const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
 
@@ -814,34 +809,56 @@ function addSlide() {
         videoLink: updatedUrl
     });
 
-    console.log("Current slideQueue:", slideQueue); // 슬라이드가 추가될 때 확인
-}
+    console.log("Slide added. Current slideQueue:", JSON.stringify(slideQueue));
+    
+    const slidesContainer = document.querySelector('.slides');
+    const newSlide = document.createElement('div');
+    newSlide.className = 'slide';
+    newSlide.dataset.id = slideId;
+    newSlide.innerHTML = `
+        <img src="https://img.youtube.com/vi/${videoId}/0.jpg" alt="Video Thumbnail" style="aspect-ratio: 16/9;">
+        <div class="slide-close">&times;</div>
+    `;
 
+    newSlide.addEventListener('click', () => handleSlideClick(slideId));
 
-let slideCheckAlertShown = false;
-
-function checkIfSlidesExist() {
-    console.log("Checking slides, current slideQueue:", slideQueue); // 슬라이드 큐 상태를 확인하는 로그
-    if (!slideQueue || slideQueue.length === 0) {
-        if (!slideCheckAlertShown) { // 처음에만 알림을 띄움
-            alert('추가된 슬라이드가 없습니다. 슬라이드를 추가하세요.');
-            slideCheckAlertShown = true; // 알림을 한 번 띄운 후 true로 변경
-        }
-        return false;
+    const emptySlide = slidesContainer.querySelector('.empty-slide');
+    if (emptySlide) {
+        slidesContainer.insertBefore(newSlide, emptySlide);
+    } else {
+        slidesContainer.appendChild(newSlide);
     }
-    slideCheckAlertShown = false; // 슬라이드가 있으면 다시 초기화
-    return true;
+
+    newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
+        event.stopPropagation();
+        removeSlide(slideId);
+    });
+
+    makeSlidesSortable();
+
+    document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
+    document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
+    document.querySelector('.empty-slide').classList.remove('selected');
 }
 
 function openPreviewWindow() {
     const groupTitle = document.querySelector('.group-title input').value;
     const description = document.querySelector('.description textarea').value;
 
+    console.log("Opening preview. Current slideQueue:", slideQueue);
+
+    if (slideQueue.length === 0) {
+        alert('추가된 슬라이드가 없습니다.');
+        return;
+    }
+
     const slideQueueParam = encodeURIComponent(JSON.stringify(slideQueue));
     const groupTitleParam = encodeURIComponent(groupTitle);
     const descriptionParam = encodeURIComponent(description);
 
     const url = `preview.html?slideQueue=${slideQueueParam}&groupTitle=${groupTitleParam}&description=${descriptionParam}`;
+
+    console.log("Opening preview window with URL:", url);
 
     window.open(url, 'previewWindow', 'width=800,height=860');
 }
@@ -925,7 +942,12 @@ function removeSlide(slideId) {
     }
 
     slideQueue = slideQueue.filter(slide => slide.id !== slideId);
-    console.log("Slide removed. Current slideQueue:", slideQueue); // 슬라이드가 삭제될 때 확인
+
+    makeSlidesSortable();
+
+    if (slidesContainer.querySelectorAll('.slide').length === 0) {
+        addEmptySlide();
+    }
 }
 
 function makeSlidesSortable() {
@@ -973,11 +995,11 @@ function getDragAfterElement(container, x) {
 
 function updateSlideQueue() {
     const slides = document.querySelectorAll('.slide:not(.empty-slide)');
-    slideQueue = Array.from(slides).map(slide => {
+    const newQueue = Array.from(slides).map(slide => {
         const slideId = slide.dataset.id;
         return slideQueue.find(item => item.id === slideId);
     });
-    console.log('Updated slideQueue:', slideQueue);
+    slideQueue = newQueue;
 }
 
 function updateSlideIndices() {
@@ -1034,7 +1056,10 @@ function updateTicks(zoomFactor) {
 }
 
 function playSlides() {
-    console.log("Starting slideshow. Current slideQueue:", slideQueue); // 슬라이드 쇼 시작 시 확인
+    if (slideQueue.length === 0) {
+        alert('추가된 슬라이드가 없습니다.');
+        return;
+    }
 
     let currentSlideIndex = 0;
 
@@ -1059,85 +1084,52 @@ function playSlides() {
     playNextSlide();
 }
 
-async function startSlideshow() {
-    isPlaying = true;
-    slideshowFinished = false; // 슬라이드쇼가 시작될 때 false로 설정
-    currentSlideIndex = 0; // 첫 번째 슬라이드부터 시작
-    document.getElementById('overlayPlayButton').style.display = 'none';
-    playSlideAtIndex(currentSlideIndex);
-}
-
-function playSlideAtIndex(index) {
-    clearTimeout(currentSlideTimeout);
-    if (index < 0 || index >= slideQueue.length) {
-        finishSlideshow();
-        return;
-    }
-
-    currentSlideIndex = index;
-    const slide = slideQueue[currentSlideIndex];
-    console.log("Playing slide:", slide);
-
-    slideshowFinished = false;
-    document.getElementById('overlayPlayButton').style.display = 'none';
-    updateButtonStates();
-
-    if (slide.type === 'video') {
-        playVideoSlide(slide);
-    } else if (slide.type === 'image') {
-        playImageSlide(slide);
-    }
-}
-
 function playVideoSlide(slide) {
-    const { videoId, startTime, endTime } = slide;
-    document.querySelector('.video-container').style.display = 'block';
-    document.getElementById('imageContainer').style.display = 'none';
-
-    player.loadVideoById({
-        'videoId': videoId,
-        'startSeconds': startTime,
-        'endSeconds': endTime
-    });
-
-    player.playVideo();
-
-    currentSlideTimeout = setTimeout(() => {
-        if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-            playSlideAtIndex(currentSlideIndex + 1);
+    return new Promise((resolve) => {
+        if (player && player.getPlayerState() !== YT.PlayerState.CUED) {
+            player.cueVideoById({
+                videoId: slide.videoId,
+                startSeconds: slide.startTime,
+                endSeconds: slide.endTime
+            });
         } else {
-            finishSlideshow();
+            player.loadVideoById({
+                videoId: slide.videoId,
+                startSeconds: slide.startTime,
+                endSeconds: slide.endTime
+            });
         }
-    }, (endTime - startTime) * 1000);
+
+        player.playVideo();
+
+        const checkEndInterval = setInterval(() => {
+            if (player.getCurrentTime() >= slide.endTime) {
+                clearInterval(checkEndInterval);
+                player.pauseVideo();
+                resolve();
+            }
+        }, 1000);
+    });
 }
 
 function playImageSlide(slide) {
-    const { imageUrl, duration } = slide;
-    document.querySelector('.video-container').style.display = 'none';
-    document.getElementById('imageContainer').style.display = 'flex';
+    return new Promise((resolve) => {
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'image-slide';
+        imageContainer.innerHTML = `<img src="${slide.imageUrl}" alt="Image Slide" style="width: 100%;">`;
+        document.body.appendChild(imageContainer);
 
-    const previewImage = document.getElementById('previewImage');
-    previewImage.src = imageUrl;
-
-    currentSlideTimeout = setTimeout(() => {
-        if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-            playSlideAtIndex(currentSlideIndex + 1);
-        } else {
-            finishSlideshow();
-        }
-    }, duration * 1000);
+        setTimeout(() => {
+            document.body.removeChild(imageContainer);
+            resolve();
+        }, slide.duration * 1000);
+    });
 }
 
 function getSlideQueue() {
     console.log("Current slideQueue:", slideQueue);
     return slideQueue;
 }
-
-window.startSlideshow = startSlideshow;
-window.prevSlide = prevSlide;
-window.nextSlide = nextSlide;
-window.closePreview = closePreview;
-window.uploadContent = uploadContent;
 
 // 기존 함수들 내보내기
 export {
@@ -1172,5 +1164,5 @@ export {
     formatDuration,
     playSlides,
     getSlideQueue,
-    slideQueue
+    slideQueue // getSlideQueue 추가
 };
