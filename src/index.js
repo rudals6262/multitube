@@ -49,6 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
 
+    window.addEventListener('load', () => {
+        console.log("Page loaded. Current slideQueue:", slideQueue); // 페이지 로드 후 확인
+
+        if (!slideQueue || slideQueue.length === 0) {
+            slideQueue = [];  // 슬라이드 큐 초기화
+        }
+
+        updateLayout();
+    });
+    
     Object.assign(window, {
         addVideoInputFields,
         addImageInputFields,
