@@ -9,7 +9,7 @@ let originalTrackWidth = null;
 let currentEditingSlideIndex;
 let checkEndInterval;
 let slideIdCounter = 0;
-let hasShownAlert = false;
+let isCheckingSlideQueue = false;
 
 function createUniqueSlideId() {
     return `slide_${slideIdCounter++}`;
@@ -23,20 +23,21 @@ if (!window.YT) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    setupEventListeners();
-    hideMediabox();
-    window.addEventListener('resize', updateLayout);
-    addEmptySlide();
-    setupEmptySlide();
     if (!window.slideQueue) {
         window.slideQueue = [];
     }
     
+    setupEventListeners();
+    hideMediabox();
     addEmptySlide();
     setupEmptySlide();
     
-    // 기존 슬라이드가 있다면 동기화
-    syncSlideQueueWithDOM();
+    // 페이지 로드 시 한 번만 체크
+    setTimeout(() => {
+        if (document.querySelectorAll('.slide:not(.empty-slide)').length === 0) {
+            slideQueue = [];
+        }
+    }, 0);
 });
 
 window.onYouTubeIframeAPIReady = function() {
@@ -543,6 +544,18 @@ function setupEventListeners() {
         descriptionTextarea.removeEventListener('input', handleDescriptionTextareaInput);
         descriptionTextarea.addEventListener('input', handleDescriptionTextareaInput);
     }
+    
+        // 슬라이드 체크가 필요한 버튼이나 요소에 대한 이벤트 리스너
+        const checkButtons = document.querySelectorAll('.check-slides-button');
+        checkButtons.forEach(button => {
+            // 이전 이벤트 리스너 제거
+            button.removeEventListener('click', checkSlideQueueEmpty);
+            // 새로운 이벤트 리스너 추가
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                checkSlideQueueEmpty();
+            });
+        });
 }
 
 function handleButtonClick(e) {
@@ -554,27 +567,29 @@ function handleButtonClick(e) {
 }
 
 function checkSlideQueueEmpty() {
-    const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
+    // 이미 체크 중이라면 중복 실행 방지
+    if (isCheckingSlideQueue) {
+        return false;
+    }
     
-    // slideQueue와 실제 DOM 요소 둘 다 확인
-    if ((!slideQueue || slideQueue.length === 0) && slideElements.length === 0) {
-        if (!hasShownAlert) {
+    try {
+        isCheckingSlideQueue = true;
+        
+        // DOM에서 실제 슬라이드 요소들 확인
+        const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
+        
+        // slideQueue와 실제 DOM 요소 둘 다 확인
+        if ((!slideQueue || slideQueue.length === 0) && slideElements.length === 0) {
+            // 한 번만 알림 표시
             alert('추가된 슬라이드가 없습니다.');
-            hasShownAlert = true;  // 경고창이 한 번만 뜨도록 설정
+            return true;
         }
-        return true;
+        
+        return false;
+    } finally {
+        // 체크 완료 후 상태 초기화
+        isCheckingSlideQueue = false;
     }
-
-    // 경고창 플래그 초기화 (슬라이드가 있으면)
-    hasShownAlert = false;
-
-    // slideQueue와 DOM이 동기화되지 않은 경우 동기화
-    if (slideQueue.length !== slideElements.length) {
-        console.log("Synchronizing slide queue with DOM elements");
-        syncSlideQueueWithDOM();
-    }
-    
-    return false;
 }
 
 function syncSlideQueueWithDOM() {
@@ -1063,7 +1078,18 @@ function getDragAfterElement(container, x) {
 }
 
 function updateSlideQueue() {
-    syncSlideQueueWithDOM();
+    const slides = document.querySelectorAll('.slide:not(.empty-slide)');
+    const newQueue = Array.from(slides).map(slide => {
+        const slideId = slide.dataset.id;
+        return slideQueue.find(item => item.id === slideId);
+    }).filter(Boolean); // null/undefined 항목 제거
+    
+    slideQueue = newQueue;
+    
+    // 슬라이드 개수가 변경된 후에도 중복 체크 방지
+    if (!isCheckingSlideQueue && slideQueue.length === 0) {
+        checkSlideQueueEmpty();
+    }
 }
 
 function updateSlideIndices() {
