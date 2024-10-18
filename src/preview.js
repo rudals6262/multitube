@@ -74,26 +74,21 @@ function playVideoSlide(slide) {
     document.querySelector('.video-container').style.display = 'block';
     document.getElementById('imageContainer').style.display = 'none';
 
-    // 밀리초를 초 단위로 변환
-    const startSeconds = startTime / 1000;
-    const endSeconds = endTime / 1000;
-
     player.loadVideoById({
         'videoId': videoId,
-        'startSeconds': startSeconds,
-        'endSeconds': endSeconds
+        'startSeconds': startTime,
+        'endSeconds': endTime
     });
 
     player.playVideo();
 
-    // 정확한 재생 시간 계산
     currentSlideTimeout = setTimeout(() => {
         if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
             playSlideAtIndex(currentSlideIndex + 1);
         } else {
             finishSlideshow();
         }
-    }, endTime - startTime); // 이미 밀리초 단위이므로 1000을 곱하지 않음
+    }, (endTime - startTime) * 1000);
 }
 
 function playImageSlide(slide) {
