@@ -544,14 +544,15 @@ function handleButtonClick(e) {
 }
 
 function checkSlideQueueEmpty() {
-    console.log("Checking slide queue:", slideQueue); // 슬라이드 큐 출력
+    console.log("Checking slide queue:", slideQueue); // 슬라이드 큐 상태를 로그로 확인
+    
+    // 슬라이드 큐가 비었는지 확인
     if (!slideQueue || slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return true;
     }
     return false;
 }
-
 
 function handlePreviewClick() {
     const slidesContainer = document.querySelector('.slides');
@@ -808,24 +809,25 @@ function addSlide() {
 
     const startThumb = document.getElementById('startThumb');
     const endThumb = document.getElementById('endThumb');
-    const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration * 1000; // 밀리초 단위로 변환
-    const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration * 1000; // 밀리초 단위로 변환
+    const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration * 1000;
+    const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration * 1000;
 
     const slideId = createUniqueSlideId();
+    
+    // 슬라이드 큐에 새로운 슬라이드 추가
     slideQueue.push({
         id: slideId,
         type: 'video',
         videoId,
-        startTime,  // 밀리초 단위
-        endTime,    // 밀리초 단위
+        startTime, // 밀리초 단위
+        endTime,   // 밀리초 단위
         videoDuration: videoDuration * 1000, // 밀리초 단위로 저장
         videoLink: updatedUrl
     });
 
-    // 슬라이드 큐에 저장된 시작 시간과 종료 시간 콘솔에 출력
-    console.log(`Slide added: Start time = ${startTime}ms, End time = ${endTime}ms`);
-    
-    // 슬라이드가 제대로 추가되었는지 체크하는 로직을 추가
+    // 슬라이드 추가 후 슬라이드 큐 상태 확인
+    console.log("Slide added. Current slideQueue:", slideQueue);
+
     const slidesContainer = document.querySelector('.slides');
     const newSlide = document.createElement('div');
     newSlide.className = 'slide';
@@ -845,21 +847,17 @@ function addSlide() {
         slidesContainer.appendChild(newSlide);
     }
 
-    // 슬라이드 추가 후 이벤트 리스너가 제대로 설정되었는지 확인
     newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
         event.stopPropagation();
         removeSlide(slideId);
     });
 
     makeSlidesSortable();
-
     document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
     document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
     document.querySelector('.empty-slide').classList.remove('selected');
-
-    console.log(`Slide added: Start time = ${startTime}ms, End time = ${endTime}ms`);
-    console.log("Slide added. Current slideQueue:", slideQueue);
 }
+
 
 function openPreviewWindow() {
     const groupTitle = document.querySelector('.group-title input').value;
