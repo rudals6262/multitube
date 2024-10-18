@@ -544,12 +544,14 @@ function handleButtonClick(e) {
 }
 
 function checkSlideQueueEmpty() {
+    console.log("Checking slide queue:", slideQueue); // 슬라이드 큐 출력
     if (!slideQueue || slideQueue.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return true;
     }
     return false;
 }
+
 
 function handlePreviewClick() {
     const slidesContainer = document.querySelector('.slides');
@@ -854,6 +856,8 @@ function addSlide() {
     document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
     document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
     document.querySelector('.empty-slide').classList.remove('selected');
+
+    console.log("Slide added. Current slideQueue:", slideQueue); // 슬라이드 추가 후 상태 출력
 }
 
 function openPreviewWindow() {
@@ -958,6 +962,8 @@ function removeSlide(slideId) {
     if (slidesContainer.querySelectorAll('.slide').length === 0) {
         addEmptySlide();
     }
+    
+    console.log("Slide removed. Current slideQueue:", slideQueue); // 슬라이드 삭제 후 상태 출력
 }
 
 function makeSlidesSortable() {
@@ -1190,11 +1196,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('load', () => {
         console.log("Page loaded. Current slideQueue:", slideQueue);
-
+    
+        // 슬라이드 큐가 존재하지 않거나 빈 경우 처리
         if (!slideQueue || slideQueue.length === 0) {
-            slideQueue = [];
+            slideQueue = [];  // 슬라이드 큐가 없으면 빈 배열로 초기화
         }
-
+    
         updateLayout();
     });
 
