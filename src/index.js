@@ -27,6 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', updateLayout);
     addEmptySlide();
     setupEmptySlide();
+    if (!window.slideQueue) {
+        window.slideQueue = [];
+    }
+    
+    addEmptySlide();
+    setupEmptySlide();
+    
+    // 기존 슬라이드가 있다면 동기화
+    syncSlideQueueWithDOM();
 });
 
 window.onYouTubeIframeAPIReady = function() {
@@ -544,14 +553,46 @@ function handleButtonClick(e) {
 }
 
 function checkSlideQueueEmpty() {
-    console.log("Checking slide queue:", slideQueue); // 슬라이드 큐 상태를 로그로 확인
+    // DOM에서 실제 슬라이드 요소들 확인
+    const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
     
-    // 슬라이드 큐가 비었는지 확인
-    if (!slideQueue || slideQueue.length === 0) {
+    // slideQueue와 실제 DOM 요소 둘 다 확인
+    if ((!slideQueue || slideQueue.length === 0) && slideElements.length === 0) {
         alert('추가된 슬라이드가 없습니다.');
         return true;
     }
+    
+    // slideQueue와 DOM이 동기화되지 않은 경우 동기화
+    if (slideQueue.length !== slideElements.length) {
+        console.log("Synchronizing slide queue with DOM elements");
+        syncSlideQueueWithDOM();
+    }
+    
     return false;
+}
+
+function syncSlideQueueWithDOM() {
+    const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
+    const newQueue = Array.from(slideElements).map(slideElement => {
+        const slideId = slideElement.dataset.id;
+        const existingSlide = slideQueue.find(slide => slide.id === slideId);
+        if (!existingSlide) {
+            // 만약 큐에 없는 슬라이드라면 기본 데이터로 생성
+            return {
+                id: slideId,
+                type: 'video',
+                videoId: slideElement.querySelector('img').src.split('/').pop(),
+                startTime: 0,
+                endTime: 0,
+                videoDuration: 0,
+                videoLink: `https://www.youtube.com/watch?v=${slideElement.querySelector('img').src.split('/').pop()}`
+            };
+        }
+        return existingSlide;
+    });
+    
+    slideQueue = newQueue;
+    console.log("Synchronized slideQueue:", slideQueue);
 }
 
 function handlePreviewClick() {
@@ -856,6 +897,13 @@ function addSlide() {
     document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
     document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
     document.querySelector('.empty-slide').classList.remove('selected');
+
+    syncSlideQueueWithDOM();
+    
+    makeSlidesSortable();
+    document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
+    document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
+    document.querySelector('.empty-slide').classList.remove('selected');
 }
 
 
@@ -1009,12 +1057,7 @@ function getDragAfterElement(container, x) {
 }
 
 function updateSlideQueue() {
-    const slides = document.querySelectorAll('.slide:not(.empty-slide)');
-    const newQueue = Array.from(slides).map(slide => {
-        const slideId = slide.dataset.id;
-        return slideQueue.find(item => item.id === slideId);
-    });
-    slideQueue = newQueue;
+    syncSlideQueueWithDOM();
 }
 
 function updateSlideIndices() {
