@@ -857,7 +857,8 @@ function addSlide() {
     document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
     document.querySelector('.empty-slide').classList.remove('selected');
 
-    console.log("Slide added. Current slideQueue:", slideQueue); // 슬라이드 추가 후 상태 출력
+    console.log(`Slide added: Start time = ${startTime}ms, End time = ${endTime}ms`);
+    console.log("Slide added. Current slideQueue:", slideQueue);
 }
 
 function openPreviewWindow() {
@@ -1197,9 +1198,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', () => {
         console.log("Page loaded. Current slideQueue:", slideQueue);
     
-        // 슬라이드 큐가 존재하지 않거나 빈 경우 처리
         if (!slideQueue || slideQueue.length === 0) {
             slideQueue = [];  // 슬라이드 큐가 없으면 빈 배열로 초기화
+            console.log("Slide queue initialized as an empty array");
         }
     
         updateLayout();
