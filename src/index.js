@@ -689,9 +689,9 @@ function updateSlide(slideId) {
         id: slideId,
         type: 'video',
         videoId,
-        startTime,
-        endTime,
-        videoDuration,
+        startTime,  // 밀리초 단위
+        endTime,    // 밀리초 단위
+        videoDuration: videoDuration * 1000, // 밀리초 단위로 저장
         videoLink: updatedUrl
     };
 
@@ -816,11 +816,12 @@ function addSlide() {
         id: slideId,
         type: 'video',
         videoId,
-        startTime,
-        endTime,
-        videoDuration,
+        startTime,  // 밀리초 단위
+        endTime,    // 밀리초 단위
+        videoDuration: videoDuration * 1000, // 밀리초 단위로 저장
         videoLink: updatedUrl
     });
+
 
     console.log("Slide added. Current slideQueue after addition:", JSON.stringify(slideQueue));
     
