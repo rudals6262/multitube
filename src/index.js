@@ -10,7 +10,7 @@ let currentEditingSlideIndex;
 let checkEndInterval;
 let slideIdCounter = 0;
 let isCheckingSlideQueue = false;
-let previewCheckInProgress = false;
+
 
 function createUniqueSlideId() {
     return `slide_${slideIdCounter++}`;
@@ -522,14 +522,12 @@ function setupEventListeners() {
         buttons.addEventListener('click', handleButtonClick);
     }
 
-    const previewButton = document.querySelector('.preview-button');
-    if (previewButton) {
-        // 기존 이벤트 리스너 제거
-        previewButton.removeEventListener('click', handlePreviewButton);
-        // 새 이벤트 리스너 추가
-        previewButton.addEventListener('click', handlePreviewButton);
+    const previewBtn = document.querySelector('.preview-btn');
+    if (previewBtn) {
+        previewBtn.removeEventListener('click', handlePreviewClick);
+        previewBtn.addEventListener('click', handlePreviewClick);
     }
-    
+
     const slides = document.querySelectorAll('.slide');
     slides.forEach(slide => {
         slide.removeEventListener('click', handleSlideClick);
@@ -571,28 +569,27 @@ function handleButtonClick(e) {
 
 function checkSlideQueueEmpty() {
     // 이미 체크 중이라면 중복 실행 방지
-    if (previewCheckInProgress) {
+    if (isCheckingSlideQueue) {
         return false;
     }
     
     try {
-        previewCheckInProgress = true;
+        isCheckingSlideQueue = true;
         
         // DOM에서 실제 슬라이드 요소들 확인
         const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
         
         // slideQueue와 실제 DOM 요소 둘 다 확인
         if ((!slideQueue || slideQueue.length === 0) && slideElements.length === 0) {
+            // 한 번만 알림 표시
             alert('추가된 슬라이드가 없습니다.');
             return true;
         }
         
         return false;
     } finally {
-        // 약간의 지연 후 체크 상태 초기화
-        setTimeout(() => {
-            previewCheckInProgress = false;
-        }, 100);
+        // 체크 완료 후 상태 초기화
+        isCheckingSlideQueue = false;
     }
 }
 
@@ -620,15 +617,14 @@ function syncSlideQueueWithDOM() {
     console.log("Synchronized slideQueue:", slideQueue);
 }
 
-function handlePreviewButton(e) {
-    e.preventDefault();
+function handlePreviewClick() {
+    const slidesContainer = document.querySelector('.slides');
+    const slides = slidesContainer.querySelectorAll('.slide:not(.empty-slide)');
     
-    if (checkSlideQueueEmpty()) {
-        return; // 슬라이드가 비어있으면 여기서 종료
-    }
+    // 중복된 경고 메시지 제거 후, 함수로 통합
+    if (checkSlideQueueEmpty()) return;
     
-    // 미리보기 관련 로직 실행
-    startPreview();
+    openPreviewWindow();
 }
 
 function handleSlideClick(slideId) {
