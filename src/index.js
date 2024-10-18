@@ -543,13 +543,21 @@ function handleButtonClick(e) {
     }
 }
 
+function checkSlideQueueEmpty() {
+    if (!slideQueue || slideQueue.length === 0) {
+        alert('추가된 슬라이드가 없습니다.');
+        return true;
+    }
+    return false;
+}
+
 function handlePreviewClick() {
     const slidesContainer = document.querySelector('.slides');
     const slides = slidesContainer.querySelectorAll('.slide:not(.empty-slide)');
-    if (slides.length === 0 && slideQueue.length === 0) {
-        alert('추가된 슬라이드가 없습니다.');
-        return;
-    }
+    
+    // 중복된 경고 메시지 제거 후, 함수로 통합
+    if (checkSlideQueueEmpty()) return;
+    
     openPreviewWindow();
 }
 
@@ -855,11 +863,6 @@ function openPreviewWindow() {
 
     console.log("Opening preview. Current slideQueue:", slideQueue);
 
-    if (slideQueue.length === 0) {
-        alert('추가된 슬라이드가 없습니다.');
-        return;
-    }
-
     const slideQueueParam = encodeURIComponent(JSON.stringify(slideQueue));
     const groupTitleParam = encodeURIComponent(groupTitle);
     const descriptionParam = encodeURIComponent(description);
@@ -1064,10 +1067,8 @@ function updateTicks(zoomFactor) {
 }
 
 function playSlides() {
-    if (slideQueue.length === 0) {
-        alert('추가된 슬라이드가 없습니다.');
-        return;
-    }
+    // 슬라이드가 없을 경우 함수 종료
+    if (checkSlideQueueEmpty()) return;
 
     let currentSlideIndex = 0;
 
