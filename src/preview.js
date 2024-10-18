@@ -76,28 +76,40 @@ function playVideoSlide(slide) {
 
     player.loadVideoById({
         'videoId': videoId,
-        'startSeconds': startTime / 1000 // 밀리초에서 초 단위로 변환
+        'startSeconds': startTime / 1000 // 밀리초를 초로 변환
     });
 
     player.playVideo();
 
-    // 비디오가 재생되는 동안 현재 시간을 체크
-    const checkInterval = setInterval(() => {
-        const currentTime = player.getCurrentTime() * 1000; // 초를 밀리초로 변환
+    // YouTube API의 onStateChange 이벤트를 활용하여 비디오 상태를 감시
+    player.addEventListener('onStateChange', (event) => {
+        if (event.data === YT.PlayerState.PLAYING) {
+            // 비디오가 재생되고 있을 때만 currentTime을 체크
+            const checkInterval = setInterval(() => {
+                const currentTime = player.getCurrentTime() * 1000; // 현재 시간을 밀리초로 변환
 
-        // 현재 시간이 endTime에 도달하면 비디오를 중지하고 다음 슬라이드로 넘어감
-        if (currentTime >= endTime) {
-            clearInterval(checkInterval);
-            player.pauseVideo();
+                // 현재 시간이 endTime에 도달했을 때
+                if (currentTime >= endTime) {
+                    clearInterval(checkInterval);
+                    player.pauseVideo(); // 비디오를 중지
+                    if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
+                        playSlideAtIndex(currentSlideIndex + 1); // 다음 슬라이드 재생
+                    } else {
+                        finishSlideshow(); // 마지막 슬라이드인 경우 종료 처리
+                    }
+                }
+            }, 100); // 100ms마다 체크
+
+        } else if (event.data === YT.PlayerState.ENDED) {
+            // 비디오가 자연스럽게 종료되었을 때
             if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-                playSlideAtIndex(currentSlideIndex + 1);
+                playSlideAtIndex(currentSlideIndex + 1); // 다음 슬라이드로 넘어감
             } else {
-                finishSlideshow();
+                finishSlideshow(); // 슬라이드쇼 종료
             }
         }
-    }, 100);  // 100ms마다 현재 시간을 체크
+    });
 }
-
 
 function playImageSlide(slide) {
     const { imageUrl, duration } = slide;
