@@ -387,7 +387,7 @@ function playSegment(startTime, endTime) {
                     if (currentTime >= endTime) {
                         player.pauseVideo();
                         player.seekTo(startTime);
-                        clearInterval(checkEndInterval);
+                        clearInsterval(checkEndInterval);
                         resolve();
                     }
                 }
