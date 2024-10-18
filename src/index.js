@@ -689,9 +689,9 @@ function updateSlide(slideId) {
         id: slideId,
         type: 'video',
         videoId,
-        startTime,  // 밀리초 단위
-        endTime,    // 밀리초 단위
-        videoDuration: videoDuration * 1000, // 밀리초 단위로 저장
+        startTime: startTime * 1000,  // 초 -> 밀리초로 변환
+        endTime: endTime * 1000,      // 초 -> 밀리초로 변환
+        videoDuration: videoDuration * 1000,
         videoLink: updatedUrl
     };
 
@@ -816,8 +816,8 @@ function addSlide() {
         id: slideId,
         type: 'video',
         videoId,
-        startTime,  // 밀리초 단위
-        endTime,    // 밀리초 단위
+        startTime: startTime * 1000,  // 초 -> 밀리초로 변환
+        endTime: endTime * 1000,      // 초 -> 밀리초로 변환
         videoDuration: videoDuration * 1000, // 밀리초 단위로 저장
         videoLink: updatedUrl
     });

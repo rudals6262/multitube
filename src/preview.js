@@ -69,58 +69,31 @@ function playSlideAtIndex(index) {
     }
 }
 
-let checkInterval; // 전역 변수로 선언하여 clearInterval이 정상적으로 작동하도록
-
 function playVideoSlide(slide) {
     const { videoId, startTime, endTime } = slide;
     document.querySelector('.video-container').style.display = 'block';
     document.getElementById('imageContainer').style.display = 'none';
 
-    // 기존의 이벤트 리스너 제거 (중복 등록 방지)
-    player.removeEventListener('onStateChange', handleStateChange);
+    // 밀리초를 초 단위로 변환
+    const startSeconds = startTime / 1000;
+    const endSeconds = endTime / 1000;
 
-    // 비디오 로드 및 재생
     player.loadVideoById({
         'videoId': videoId,
-        'startSeconds': startTime / 1000 // 밀리초를 초 단위로 변환
+        'startSeconds': startSeconds,
+        'endSeconds': endSeconds
     });
 
     player.playVideo();
 
-    // 비디오 상태 변경 이벤트 등록
-    player.addEventListener('onStateChange', handleStateChange);
-
-    // 상태 변경 이벤트 처리 함수
-    function handleStateChange(event) {
-        if (event.data === YT.PlayerState.PLAYING) {
-            // 비디오가 재생되면 현재 시간 체크 시작
-            clearInterval(checkInterval); // 기존의 setInterval 중지
-            checkInterval = setInterval(() => {
-                const currentTime = player.getCurrentTime() * 1000; // 현재 시간을 밀리초로 변환
-
-                // 현재 시간이 endTime에 도달했으면 비디오 중지 및 다음 슬라이드로 이동
-                if (currentTime >= endTime) {
-                    clearInterval(checkInterval); // 더 이상 체크하지 않도록 설정
-                    player.pauseVideo(); // 비디오를 일시정지
-
-                    // 다음 슬라이드로 이동 또는 슬라이드쇼 종료
-                    if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-                        playSlideAtIndex(currentSlideIndex + 1);
-                    } else {
-                        finishSlideshow();
-                    }
-                }
-            }, 100); // 100ms마다 체크
-        } else if (event.data === YT.PlayerState.ENDED) {
-            // 비디오가 자연스럽게 종료되었을 때 처리
-            clearInterval(checkInterval); // 더 이상 체크하지 않도록 설정
-            if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-                playSlideAtIndex(currentSlideIndex + 1);
-            } else {
-                finishSlideshow();
-            }
+    // 정확한 재생 시간 계산
+    currentSlideTimeout = setTimeout(() => {
+        if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
+            playSlideAtIndex(currentSlideIndex + 1);
+        } else {
+            finishSlideshow();
         }
-    }
+    }, endTime - startTime); // 이미 밀리초 단위이므로 1000을 곱하지 않음
 }
 
 function playImageSlide(slide) {
