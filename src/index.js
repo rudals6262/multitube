@@ -788,9 +788,6 @@ function showMediaButtons() {
 }
 
 function addSlide() {
-    // 슬라이드 추가 시 슬라이드 큐에 슬라이드가 추가되고 있는지 확인하는 로그 추가
-    console.log("Adding new slide. Current slideQueue before addition:", JSON.stringify(slideQueue));
-    
     const videoLinkInput = document.getElementById('videoLink');
     const videoLink = videoLinkInput.value.trim();
     let videoId, updatedUrl;
@@ -808,8 +805,8 @@ function addSlide() {
 
     const startThumb = document.getElementById('startThumb');
     const endThumb = document.getElementById('endThumb');
-    const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
-    const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
+    const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration * 1000; // 밀리초 단위로 변환
+    const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration * 1000; // 밀리초 단위로 변환
 
     const slideId = createUniqueSlideId();
     slideQueue.push({
@@ -822,8 +819,8 @@ function addSlide() {
         videoLink: updatedUrl
     });
 
-
-    console.log("Slide added. Current slideQueue after addition:", JSON.stringify(slideQueue));
+    // 슬라이드 큐에 저장된 시작 시간과 종료 시간 콘솔에 출력
+    console.log(`Slide added: Start time = ${startTime}ms, End time = ${endTime}ms`);
     
     // 슬라이드가 제대로 추가되었는지 체크하는 로직을 추가
     const slidesContainer = document.querySelector('.slides');

@@ -74,22 +74,37 @@ function playVideoSlide(slide) {
     document.querySelector('.video-container').style.display = 'block';
     document.getElementById('imageContainer').style.display = 'none';
 
+    // 비디오 재생 시간 출력
+    console.log(`Playing video: Start time = ${startTime}ms, End time = ${endTime}ms`);
+
     player.loadVideoById({
         'videoId': videoId,
-        'startSeconds': startTime,
-        'endSeconds': endTime
+        'startSeconds': startTime / 1000 // 밀리초를 초로 변환
     });
 
     player.playVideo();
 
-    currentSlideTimeout = setTimeout(() => {
-        if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-            playSlideAtIndex(currentSlideIndex + 1);
-        } else {
-            finishSlideshow();
+    // 비디오가 재생되는 동안 현재 시간 체크 시작
+    const checkInterval = setInterval(() => {
+        const currentTime = player.getCurrentTime() * 1000; // 현재 시간을 밀리초로 변환
+
+        // 현재 시간이 endTime에 도달했을 때 비디오를 중지하고 다음 슬라이드로 넘어감
+        if (currentTime >= endTime) {
+            clearInterval(checkInterval); // 더 이상 체크하지 않도록 설정
+            player.pauseVideo();
+
+            console.log(`Video ended at ${currentTime}ms`); // 종료 시간 콘솔에 출력
+
+            // 다음 슬라이드로 이동 또는 슬라이드쇼 종료
+            if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
+                playSlideAtIndex(currentSlideIndex + 1);
+            } else {
+                finishSlideshow();
+            }
         }
-    }, (endTime - startTime) * 1000);
+    }, 100); // 100ms마다 체크
 }
+
 
 function playImageSlide(slide) {
     const { imageUrl, duration } = slide;
