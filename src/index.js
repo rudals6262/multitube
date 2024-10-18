@@ -2,7 +2,6 @@
 
 import './styles.css';
 
-// 초기 변수 설정
 let player;
 let slideQueue = [];
 let currentZoomLevel = 1;
