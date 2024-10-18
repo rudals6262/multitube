@@ -9,6 +9,7 @@ let originalTrackWidth = null;
 let currentEditingSlideIndex;
 let checkEndInterval;
 let slideIdCounter = 0;
+let hasShownAlert = false;
 
 function createUniqueSlideId() {
     return `slide_${slideIdCounter++}`;
@@ -553,15 +554,20 @@ function handleButtonClick(e) {
 }
 
 function checkSlideQueueEmpty() {
-    // DOM에서 실제 슬라이드 요소들 확인
     const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
     
     // slideQueue와 실제 DOM 요소 둘 다 확인
     if ((!slideQueue || slideQueue.length === 0) && slideElements.length === 0) {
-        alert('추가된 슬라이드가 없습니다.');
+        if (!hasShownAlert) {
+            alert('추가된 슬라이드가 없습니다.');
+            hasShownAlert = true;  // 경고창이 한 번만 뜨도록 설정
+        }
         return true;
     }
-    
+
+    // 경고창 플래그 초기화 (슬라이드가 있으면)
+    hasShownAlert = false;
+
     // slideQueue와 DOM이 동기화되지 않은 경우 동기화
     if (slideQueue.length !== slideElements.length) {
         console.log("Synchronizing slide queue with DOM elements");
