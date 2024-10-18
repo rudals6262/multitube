@@ -377,7 +377,7 @@ function playSegment(startTime, endTime) {
         }
 
         if (player && player.seekTo && typeof player.seekTo === 'function') {
-            player.seekTo(startTime);
+            player.seekTo(startTime); // 초 단위로
             player.playVideo();
 
             checkEndInterval = setInterval(() => {
@@ -637,8 +637,9 @@ function editSlide(slideId) {
                     slide.videoDuration = duration;
                     videoDuration = duration;
 
-                    const startPercentage = (startTime / duration) * 100;
-                    const endPercentage = (endTime / duration) * 100;
+                    // 초 단위로 변환
+                    const startPercentage = (startTime / 1000 / duration) * 100;
+                    const endPercentage = (endTime / 1000 / duration) * 100;
 
                     document.getElementById('startThumb').style.left = `${startPercentage}%`;
                     document.getElementById('endThumb').style.left = `${endPercentage}%`;
@@ -646,7 +647,7 @@ function editSlide(slideId) {
                     setupSlider(startPercentage, endPercentage);
                     updateSliderRange();
                     updateLayout();
-                    playSegment(startTime, endTime);
+                    playSegment(startTime / 1000, endTime / 1000); // 밀리초 -> 초로 변환
                 }).catch(error => {
                     console.error('Error fetching video duration:', error);
                 });
