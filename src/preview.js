@@ -80,35 +80,24 @@ function playVideoSlide(slide) {
         'endSeconds': endTime / 1000       // 밀리초를 초 단위로 변환
     });
 
-    // 비디오가 준비된 후 정확한 시작 시간을 잡기 위해 onStateChange 이벤트를 사용
-    player.addEventListener('onStateChange', (event) => {
-        if (event.data == YT.PlayerState.PLAYING) {
-            const actualStartTime = player.getCurrentTime() * 1000;  // 밀리초로 변환
-            const timeDifference = actualStartTime - startTime;
-            
-            // 차이가 발생할 경우, setTimeout을 이용해 실제 재생 시간을 맞추기
-            if (timeDifference > 0) {
-                setTimeout(() => {
-                    if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-                        playSlideAtIndex(currentSlideIndex + 1);
-                    } else {
-                        finishSlideshow();
-                    }
-                }, (endTime - actualStartTime));
+    player.playVideo();
+
+    const checkInterval = setInterval(() => {
+        const currentTime = player.getCurrentTime() * 1000;  // 초를 밀리초로 변환
+
+        // 현재 시간이 endTime을 넘어가면 비디오를 중지하고 다음 슬라이드로 넘어감
+        if (currentTime >= endTime) {
+            clearInterval(checkInterval);
+            player.pauseVideo();
+            if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
+                playSlideAtIndex(currentSlideIndex + 1);
             } else {
-                setTimeout(() => {
-                    if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-                        playSlideAtIndex(currentSlideIndex + 1);
-                    } else {
-                        finishSlideshow();
-                    }
-                }, (endTime - startTime));
+                finishSlideshow();
             }
         }
-    });
-
-    player.playVideo();
+    }, 100);  // 100ms마다 현재 시간을 체크
 }
+
 
 function playImageSlide(slide) {
     const { imageUrl, duration } = slide;
