@@ -76,20 +76,40 @@ function playVideoSlide(slide) {
 
     player.loadVideoById({
         'videoId': videoId,
-        'startSeconds': startTime,
-        'endSeconds': endTime
+        'startSeconds': startTime / 1000,  // 초 단위로 변환
+        'endSeconds': endTime / 1000       // 초 단위로 변환
     });
 
     player.playVideo();
 
-    currentSlideTimeout = setTimeout(() => {
-        if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-            playSlideAtIndex(currentSlideIndex + 1);
+    // 비디오가 실제로 로드된 후에 정확한 재생 시간을 확인하고 조정
+    setTimeout(() => {
+        const actualStartTime = player.getCurrentTime() * 1000;  // 밀리초로 변환
+        const expectedEndTime = actualStartTime + (endTime - startTime);
+        const timeDifference = expectedEndTime - endTime;
+
+        if (timeDifference > 0) {
+            // 시간 차이가 발생하면 setTimeout을 이용해 정확한 시간에 끝내기
+            setTimeout(() => {
+                if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
+                    playSlideAtIndex(currentSlideIndex + 1);
+                } else {
+                    finishSlideshow();
+                }
+            }, (endTime - actualStartTime));
         } else {
-            finishSlideshow();
+            // 차이가 없을 경우 원래의 시간대로 진행
+            setTimeout(() => {
+                if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
+                    playSlideAtIndex(currentSlideIndex + 1);
+                } else {
+                    finishSlideshow();
+                }
+            }, (endTime - startTime));
         }
-    }, (endTime - startTime) * 1000);
+    }, 500);  // YouTube 비디오 로드 대기 시간 (500ms 정도)
 }
+
 
 function playImageSlide(slide) {
     const { imageUrl, duration } = slide;
