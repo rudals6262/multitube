@@ -76,28 +76,20 @@ function playVideoSlide(slide) {
 
     player.loadVideoById({
         'videoId': videoId,
-        'startSeconds': startTime / 1000,  // 밀리초를 초 단위로 변환
-        'endSeconds': endTime / 1000       // 밀리초를 초 단위로 변환
+        'startSeconds': startTime,
+        'endSeconds': endTime
     });
 
     player.playVideo();
 
-    const checkInterval = setInterval(() => {
-        const currentTime = player.getCurrentTime() * 1000;  // 초를 밀리초로 변환
-
-        // 현재 시간이 endTime을 넘어가면 비디오를 중지하고 다음 슬라이드로 넘어감
-        if (currentTime >= endTime) {
-            clearInterval(checkInterval);
-            player.pauseVideo();
-            if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
-                playSlideAtIndex(currentSlideIndex + 1);
-            } else {
-                finishSlideshow();
-            }
+    currentSlideTimeout = setTimeout(() => {
+        if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
+            playSlideAtIndex(currentSlideIndex + 1);
+        } else {
+            finishSlideshow();
         }
-    }, 100);  // 100ms마다 현재 시간을 체크
+    }, (endTime - startTime) * 1000);
 }
-
 
 function playImageSlide(slide) {
     const { imageUrl, duration } = slide;
