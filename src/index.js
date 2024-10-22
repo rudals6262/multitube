@@ -516,22 +516,52 @@ function zoomOut() {
 }
 
 function setupEventListeners() {
-    const previewBtn = document.querySelector('.preview-btn');
-    if (previewBtn) {
-        // 이벤트 리스너 중복 등록 방지: 기존 리스너 제거 후 등록
-        previewBtn.removeEventListener('click', handlePreviewClick);
-        previewBtn.addEventListener('click', handlePreviewClick);
+    // 기존 이벤트 리스너 제거를 위한 함수
+    function removeExistingListeners(element, eventType) {
+        const clone = element.cloneNode(true);
+        element.parentNode.replaceChild(clone, element);
+        return clone;
+    }
+    
+    const buttons = document.querySelector('.buttons');
+    if (buttons) {
+        buttons.removeEventListener('click', handleButtonClick);
+        buttons.addEventListener('click', handleButtonClick);
     }
 
-    const checkButtons = document.querySelectorAll('.check-slides-button');
-    checkButtons.forEach(button => {
-        // 중복 방지: 리스너 제거 후 재등록
-        button.removeEventListener('click', checkSlideQueueEmpty);
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            checkSlideQueueEmpty();
-        });
+    const previewBtn = document.querySelector('.preview-btn');
+    if (previewBtn) {
+        const newPreviewBtn = removeExistingListeners(previewBtn, 'click');
+        newPreviewBtn.addEventListener('click', handlePreviewClick);
+    }
+
+    const slides = document.querySelectorAll('.slide');
+    slides.forEach(slide => {
+        slide.removeEventListener('click', handleSlideClick);
+        slide.addEventListener('click', () => handleSlideClick(slide.dataset.id));
     });
+
+    const groupTitleInput = document.querySelector('.group-title input');
+    if (groupTitleInput) {
+        groupTitleInput.removeEventListener('input', handleGroupTitleInput);
+        groupTitleInput.addEventListener('input', handleGroupTitleInput);
+    }
+
+    const descriptionTextarea = document.querySelector('.description textarea');
+    if (descriptionTextarea) {
+        descriptionTextarea.removeEventListener('input', handleDescriptionTextareaInput);
+        descriptionTextarea.addEventListener('input', handleDescriptionTextareaInput);
+    }
+    
+        // 슬라이드 체크가 필요한 버튼이나 요소에 대한 이벤트 리스너
+        const checkButtons = document.querySelectorAll('.check-slides-button');
+        checkButtons.forEach(button => {
+            const newButton = removeExistingListeners(button, 'click');
+            newButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                checkSlideQueueEmpty();
+            });
+        });
 }
 
 function handleButtonClick(e) {
@@ -544,19 +574,21 @@ function handleButtonClick(e) {
 
 function checkSlideQueueEmpty() {
     const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
-
-    // slideQueue와 실제 DOM 요소에서 슬라이드가 없는지 확인
+    
     if ((!slideQueue || slideQueue.length === 0) && slideElements.length === 0) {
-        if (!hasShownAlert) {
-            alert('추가된 슬라이드가 없습니다.');
-            hasShownAlert = true;  // 경고창이 한 번만 뜨도록 설정
+        // 이미 경고창이 표시되었다면 true만 반환하고 종료
+        if (hasShownAlert) {
+            return true;
         }
+        
+        // 경고창을 표시하고 플래그 설정
+        alert('추가된 슬라이드가 없습니다.');
+        hasShownAlert = true;
         return true;
     }
-
-    // 슬라이드가 있을 경우 경고 플래그 초기화
+    
+    // 슬라이드가 있을 경우 플래그 초기화
     hasShownAlert = false;
-
     return false;
 }
 
@@ -585,11 +617,12 @@ function syncSlideQueueWithDOM() {
 }
 
 function handlePreviewClick() {
-    if (checkSlideQueueEmpty()) {
-        return;  // 슬라이드가 없을 경우 즉시 종료
+    // checkSlideQueueEmpty()의 결과를 한 번만 확인
+    const isEmpty = checkSlideQueueEmpty();
+    if (isEmpty) {
+        return;
     }
-
-    openPreviewWindow();  // 슬라이드가 있을 때만 미리보기 창 열기
+    openPreviewWindow();
 }
 
 function handleSlideClick(slideId) {
