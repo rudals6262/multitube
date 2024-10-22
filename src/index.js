@@ -315,18 +315,21 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
             updateSliderRange();
             const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
             const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
-            playSegment(startTime, endTime); // 슬라이더 레인지 영역 재생
+            playSegment(startTime, endTime);
         } else {
             if (percentage <= parseFloat(startThumb.style.left)) {
                 percentage = parseFloat(startThumb.style.left) + (1 / videoDuration * 100);
             }
-            const endTime = (percentage / 100) * videoDuration;
-            playSegment(endTime - 0.3, endTime).then(() => {
-                const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
-                playSegment(startTime, endTime);
-            });
             thumb.style.left = `${percentage}%`;
             updateSliderRange();
+            
+            const endTime = (percentage / 100) * videoDuration;
+            const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
+            
+            // 프리뷰 재생 후 전체 구간 재생
+            playSegment(endTime - 0.3, endTime, true).then(() => {
+                playSegment(startTime, endTime, false);
+            });
         }
     }
    
@@ -381,25 +384,31 @@ function moveEnd(event) {
     moveThumb(endThumb, event, false);
 }
 
-function playSegment(startTime, endTime) {
+function playSegment(startTime, endTime, isPreview = false) {
     return new Promise((resolve) => {
         if (checkEndInterval) {
-            clearInterval(checkEndInterval);
+            clearInterval(checkEndInterval);  // clearInsterval 오타 수정
         }
 
         if (player && player.seekTo && typeof player.seekTo === 'function') {
-            player.seekTo(startTime); // 초 단위로
+            player.seekTo(startTime);
             player.playVideo();
 
             checkEndInterval = setInterval(() => {
                 if (player && player.getCurrentTime && typeof player.getCurrentTime === 'function') {
                     const currentTime = player.getCurrentTime();
                     updateCurrentTimeIndicator();
+                    
                     if (currentTime >= endTime) {
                         player.pauseVideo();
-                        player.seekTo(startTime);
-                        clearInsterval(checkEndInterval);
-                        resolve();
+                        if (isPreview) {
+                            clearInterval(checkEndInterval);
+                            resolve();
+                        } else {
+                            player.seekTo(startTime);
+                            clearInterval(checkEndInterval);
+                            resolve();
+                        }
                     }
                 }
             }, 100);
