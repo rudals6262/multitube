@@ -395,33 +395,32 @@ function moveEnd(event) {
 function playSegment(startTime, endTime) {
     return new Promise((resolve) => {
         if (checkEndInterval) {
-            clearInterval(checkEndInterval);  // 이전 실행 중인 타이머를 정리
+            clearInterval(checkEndInterval);  // 이전 인터벌 제거
         }
 
         if (player && player.seekTo && typeof player.seekTo === 'function') {
-            // 시작 시간으로 이동한 후 비디오를 재생 (밀리초 -> 초 단위로 변환)
+            // 밀리초 -> 초로 변환하여 비디오 시작 위치 설정
             player.seekTo(startTime / 1000);  
             player.playVideo();
 
             // 비디오 재생 시간 확인 및 현재 시간 업데이트
             checkEndInterval = setInterval(() => {
-                const currentTime = player.getCurrentTime() * 1000;  // 현재 시간을 밀리초로 변환
-                updateCurrentTimeIndicator();  // 슬라이더에 현재 시간 반영
+                const currentTime = player.getCurrentTime() * 1000;  // 현재 시간(초 -> 밀리초 변환)
+                updateCurrentTimeIndicator(startTime, endTime);  // 슬라이더에 현재 시간 반영
 
                 if (currentTime >= endTime) {  // 종료 시간에 도달하면
-                    player.pauseVideo();  // 비디오 일시정지
-                    clearInterval(checkEndInterval);  // 타이머 정리
-                    resolve();  // Promise를 해결하고 다음 작업으로 넘어감
+                    player.pauseVideo();  // 비디오 멈춤
+                    clearInterval(checkEndInterval);  // 인터벌 제거
+                    resolve();  // Promise를 해결하고 구간 재생 종료
                 }
             }, 100);  // 100ms마다 현재 시간 확인
         }
     });
 }
 
-
-function updateCurrentTimeIndicator() {
+function updateCurrentTimeIndicator(startTime, endTime) {
     if (player && player.getCurrentTime) {
-        const currentTime = player.getCurrentTime() * 1000;  // 초 -> 밀리초로 변환
+        const currentTime = player.getCurrentTime() * 1000;  // 현재 시간을 밀리초로 변환
         const startThumb = document.getElementById('startThumb');
         const endThumb = document.getElementById('endThumb');
         const currentTimeIndicator = document.getElementById('currentTimeIndicator');
@@ -431,23 +430,22 @@ function updateCurrentTimeIndicator() {
         }
 
         // 슬라이더의 시작 시간과 종료 시간을 계산
-        const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
-        const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
+        const startPosition = (parseFloat(startThumb.style.left) / 100) * videoDuration;
+        const endPosition = (parseFloat(endThumb.style.left) / 100) * videoDuration;
 
-        // 현재 시간이 시작 시간과 종료 시간 범위 안에 있는지 확인
+        // 현재 시간이 시작 시간과 종료 시간 범위 내에 있는지 확인
         if (currentTime >= startTime && currentTime <= endTime) {
-            // 현재 시간을 퍼센트로 계산하여 슬라이더의 위치 업데이트
+            // 현재 시간을 퍼센트로 계산하여 슬라이더 위치 업데이트
             const percentage = ((currentTime - startTime) / (endTime - startTime)) * 100;
             const rangeStart = parseFloat(startThumb.style.left);
             const rangeWidth = parseFloat(endThumb.style.left) - rangeStart;
             const indicatorPosition = rangeStart + (percentage / 100 * rangeWidth);
 
-            // CurrentTimeIndicator의 위치를 슬라이더 트랙에서 이동
+            // CurrentTimeIndicator 위치 업데이트
             currentTimeIndicator.style.left = `${indicatorPosition}%`;
         }
     }
 }
-
 
 function applyZoom() {
     const sliderTrack = document.querySelector('.slider-track');
