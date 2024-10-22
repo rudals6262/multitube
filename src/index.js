@@ -524,6 +524,7 @@ function setupEventListeners() {
 
     const previewBtn = document.querySelector('.preview-btn');
     if (previewBtn) {
+        // 중복 리스너 제거 후 추가
         previewBtn.removeEventListener('click', handlePreviewClick);
         previewBtn.addEventListener('click', handlePreviewClick);
     }
@@ -549,15 +550,13 @@ function setupEventListeners() {
         // 슬라이드 체크가 필요한 버튼이나 요소에 대한 이벤트 리스너
         const checkButtons = document.querySelectorAll('.check-slides-button');
         checkButtons.forEach(button => {
-            // 이전 이벤트 리스너 제거
             button.removeEventListener('click', checkSlideQueueEmpty);
-            // 새로운 이벤트 리스너 추가
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 checkSlideQueueEmpty();
             });
         });
-}
+    }
 
 function handleButtonClick(e) {
     if (e.target.textContent === '동영상') {
@@ -569,6 +568,8 @@ function handleButtonClick(e) {
 
 function checkSlideQueueEmpty() {
     const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
+
+    // slideQueue와 실제 DOM 요소 둘 다 확인
     if ((!slideQueue || slideQueue.length === 0) && slideElements.length === 0) {
         if (!hasShownAlert) {
             alert('추가된 슬라이드가 없습니다.');
@@ -577,7 +578,9 @@ function checkSlideQueueEmpty() {
         return true;
     }
 
-    hasShownAlert = false;  // 슬라이드가 있으면 플래그를 초기화
+    // 슬라이드가 있는 경우 플래그 초기화
+    hasShownAlert = false;
+
     return false;
 }
 
@@ -607,10 +610,10 @@ function syncSlideQueueWithDOM() {
 
 function handlePreviewClick() {
     if (checkSlideQueueEmpty()) {
-        return;  // 경고창이 뜨면 더 이상 진행하지 않음
+        return;  // 슬라이드가 없을 경우 즉시 종료
     }
 
-    openPreviewWindow();
+    openPreviewWindow();  // 슬라이드가 있을 때만 미리보기 창 열기
 }
 
 function handleSlideClick(slideId) {
