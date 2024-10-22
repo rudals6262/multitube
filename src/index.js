@@ -399,14 +399,13 @@ function playSegment(startTime, endTime) {
         }
 
         if (player && player.seekTo && typeof player.seekTo === 'function') {
-            // 비디오 시작 시간을 지정하여 정확한 구간 재생 시작
-            player.seekTo(startTime / 1000);  // 밀리초 -> 초 단위로 변환
+            // 밀리초를 초 단위로 변환하여 seekTo 함수에 전달
+            player.seekTo(startTime / 1000);  // 밀리초를 초 단위로 변환
             player.playVideo();
 
-            // 비디오 종료 시간을 체크하여 종료되면 멈춤
             checkEndInterval = setInterval(() => {
                 const currentTime = player.getCurrentTime() * 1000;  // 현재 시간 밀리초로 변환
-                updateCurrentTimeIndicator();  // 현재 시간 슬라이더에 업데이트
+                updateCurrentTimeIndicator();
 
                 if (currentTime >= endTime) {
                     player.pauseVideo();  // 종료 시간에 도달하면 비디오 멈춤
@@ -417,6 +416,7 @@ function playSegment(startTime, endTime) {
         }
     });
 }
+
 
 function updateCurrentTimeIndicator() {
     if (player && player.getCurrentTime) {
