@@ -10,7 +10,6 @@ let currentEditingSlideIndex;
 let checkEndInterval;
 let slideIdCounter = 0;
 let isCheckingSlideQueue = false;
-let hasShownAlert = false; // 경고창이 이미 표시되었는지 여부를 추적
 
 function createUniqueSlideId() {
     return `slide_${slideIdCounter++}`;
@@ -575,20 +574,13 @@ function handleButtonClick(e) {
 function checkSlideQueueEmpty() {
     const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
     
+    // 슬라이드가 없는 경우
     if ((!slideQueue || slideQueue.length === 0) && slideElements.length === 0) {
-        // 이미 경고창이 표시되었다면 true만 반환하고 종료
-        if (hasShownAlert) {
-            return true;
-        }
-        
-        // 경고창을 표시하고 플래그 설정
+        // 매번 경고창을 표시
         alert('추가된 슬라이드가 없습니다.');
-        hasShownAlert = true;
         return true;
     }
     
-    // 슬라이드가 있을 경우 플래그 초기화
-    hasShownAlert = false;
     return false;
 }
 
@@ -617,11 +609,12 @@ function syncSlideQueueWithDOM() {
 }
 
 function handlePreviewClick() {
-    // checkSlideQueueEmpty()의 결과를 한 번만 확인
-    const isEmpty = checkSlideQueueEmpty();
-    if (isEmpty) {
+    // 슬라이드가 없을 경우 경고창을 표시하고 종료
+    if (checkSlideQueueEmpty()) {
         return;
     }
+    
+    // 슬라이드가 있는 경우 미리보기 창 열기
     openPreviewWindow();
 }
 
