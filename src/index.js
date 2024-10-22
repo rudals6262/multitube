@@ -399,28 +399,27 @@ function playSegment(startTime, endTime) {
         }
 
         if (player && player.seekTo && typeof player.seekTo === 'function') {
-            // 밀리초를 초 단위로 변환하여 seekTo 함수에 전달
-            player.seekTo(startTime / 1000);  // 밀리초를 초 단위로 변환
+            player.seekTo(startTime / 1000);  // 밀리초를 초 단위로 변환하여 비디오 시작
             player.playVideo();
 
+            // 100ms마다 현재 시간을 체크하여 CurrentTimeIndicator 업데이트
             checkEndInterval = setInterval(() => {
-                const currentTime = player.getCurrentTime() * 1000;  // 현재 시간 밀리초로 변환
-                updateCurrentTimeIndicator();
+                const currentTime = player.getCurrentTime() * 1000;  // 초 -> 밀리초로 변환
+                updateCurrentTimeIndicator();  // 현재 시간을 슬라이더에 반영
 
                 if (currentTime >= endTime) {
                     player.pauseVideo();  // 종료 시간에 도달하면 비디오 멈춤
                     clearInterval(checkEndInterval);
                     resolve();  // 구간 재생이 완료되면 Promise 해결
                 }
-            }, 100);  // 100ms마다 상태 확인
+            }, 100);  // 100ms마다 현재 시간 확인
         }
     });
 }
 
-
 function updateCurrentTimeIndicator() {
     if (player && player.getCurrentTime) {
-        const currentTime = player.getCurrentTime();
+        const currentTime = player.getCurrentTime() * 1000;  // 초 -> 밀리초 변환
         const startThumb = document.getElementById('startThumb');
         const endThumb = document.getElementById('endThumb');
         const currentTimeIndicator = document.getElementById('currentTimeIndicator');
@@ -429,14 +428,19 @@ function updateCurrentTimeIndicator() {
             return;
         }
 
+        // 슬라이더의 시작 시간과 종료 시간을 계산
         const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
         const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
 
+        // 현재 시간이 시작 시간과 종료 시간 범위 안에 있는지 확인
         if (currentTime >= startTime && currentTime <= endTime) {
+            // 현재 시간을 퍼센트로 계산해서 슬라이더의 위치 업데이트
             const percentage = ((currentTime - startTime) / (endTime - startTime)) * 100;
             const rangeStart = parseFloat(startThumb.style.left);
             const rangeWidth = parseFloat(endThumb.style.left) - rangeStart;
             const indicatorPosition = rangeStart + (percentage / 100 * rangeWidth);
+
+            // CurrentTimeIndicator를 슬라이더 트랙에서 이동
             currentTimeIndicator.style.left = `${indicatorPosition}%`;
         }
     }
