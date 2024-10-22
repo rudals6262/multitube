@@ -321,7 +321,7 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
                 percentage = parseFloat(startThumb.style.left) + (1 / videoDuration * 100);
             }
             const endTime = (percentage / 100) * videoDuration;
-            playSegment(endTime - 0.3, endTime).then(() => {
+            playSegment(endTime - 1, endTime).then(() => {
                 const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
                 playSegment(startTime, endTime);
             });
