@@ -587,15 +587,6 @@ function checkSlideQueueEmpty() {
     return false;
 }
 
-function handlePreviewClick() {
-    // 슬라이드가 없는 경우 경고창이 한 번만 뜨도록 수정
-    if (checkSlideQueueEmpty()) {
-        return;
-    }
-
-    openPreviewWindow();
-}
-
 function syncSlideQueueWithDOM() {
     const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
     const newQueue = Array.from(slideElements).map(slideElement => {
@@ -621,12 +612,11 @@ function syncSlideQueueWithDOM() {
 }
 
 function handlePreviewClick() {
-    const slidesContainer = document.querySelector('.slides');
-    const slides = slidesContainer.querySelectorAll('.slide:not(.empty-slide)');
-    
-    // 중복된 경고 메시지 제거 후, 함수로 통합
-    if (checkSlideQueueEmpty()) return;
-    
+    // 슬라이드가 없는 경우 경고창이 한 번만 뜨도록 수정
+    if (checkSlideQueueEmpty()) {
+        return;
+    }
+
     openPreviewWindow();
 }
 
