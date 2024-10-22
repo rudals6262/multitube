@@ -305,7 +305,7 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
     function moveThumb(thumb, event, isStart) {
         const rect = sliderTrack.getBoundingClientRect();
         let percentage = ((event.clientX - rect.left) / rect.width) * 100;
-        percentage = Math.max(0, Math.min(percentage, 100));
+        percentage = Math.max(0, Math.min(percentage, 100));  // 0%에서 100% 사이로 값 제한
     
         if (isStart) {
             if (percentage >= parseFloat(endThumb.style.left)) {
@@ -313,6 +313,7 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
             }
             thumb.style.left = `${percentage}%`;
             updateSliderRange();
+    
             const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
             const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
             playSegment(startTime, endTime); // 슬라이더 레인지 영역 재생
@@ -320,11 +321,20 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
             if (percentage <= parseFloat(startThumb.style.left)) {
                 percentage = parseFloat(startThumb.style.left) + (1 / videoDuration * 100);
             }
+    
             const endTime = (percentage / 100) * videoDuration;
-            playSegment(endTime - 1, endTime).then(() => {
+    
+            // 0.5초 전까지 재생하고 전체 구간 재생
+            playSegment(endTime - 500, endTime).then(() => {
                 const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
-                playSegment(startTime, endTime);
+                
+                // 0.5초 후 구간을 전체 재생
+                playSegment(startTime, endTime).then(() => {
+                    // 전체 구간 재생 완료 후 추가 동작이 필요하다면 여기에 작성
+                    console.log("전체 구간 재생 완료");
+                });
             });
+    
             thumb.style.left = `${percentage}%`;
             updateSliderRange();
         }
@@ -388,21 +398,19 @@ function playSegment(startTime, endTime) {
         }
 
         if (player && player.seekTo && typeof player.seekTo === 'function') {
-            player.seekTo(startTime); // 초 단위로
+            player.seekTo(startTime / 1000);  // 밀리초를 초로 변환하여 재생 시작
             player.playVideo();
 
             checkEndInterval = setInterval(() => {
-                if (player && player.getCurrentTime && typeof player.getCurrentTime === 'function') {
-                    const currentTime = player.getCurrentTime();
-                    updateCurrentTimeIndicator();
-                    if (currentTime >= endTime) {
-                        player.pauseVideo();
-                        player.seekTo(startTime);
-                        clearInsterval(checkEndInterval);
-                        resolve();
-                    }
+                const currentTime = player.getCurrentTime() * 1000;  // 현재 시간을 밀리초로 변환
+                updateCurrentTimeIndicator();
+
+                if (currentTime >= endTime) {
+                    player.pauseVideo();
+                    clearInterval(checkEndInterval);
+                    resolve();  // 구간이 끝나면 Promise 해결
                 }
-            }, 100);
+            }, 100);  // 100ms마다 상태 확인
         }
     });
 }
