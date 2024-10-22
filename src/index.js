@@ -569,12 +569,14 @@ function handleButtonClick(e) {
 
 function checkSlideQueueEmpty() {
     const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
-    
+
     // slideQueue와 실제 DOM 요소 둘 다 확인
     if ((!slideQueue || slideQueue.length === 0) && slideElements.length === 0) {
         if (!hasShownAlert) {
-            alert('추가된 슬라이드가 없습니다.');
-            hasShownAlert = true;  // 경고창이 한 번만 뜨도록 설정
+            setTimeout(() => {  // 경고창 비동기 호출로 중복 방지
+                alert('추가된 슬라이드가 없습니다.');
+                hasShownAlert = true;  // 경고창이 한 번만 뜨도록 설정
+            }, 0);
         }
         return true;
     }
@@ -582,13 +584,16 @@ function checkSlideQueueEmpty() {
     // 경고창 플래그 초기화 (슬라이드가 있으면)
     hasShownAlert = false;
 
-    // slideQueue와 DOM이 동기화되지 않은 경우 동기화
-    if (slideQueue.length !== slideElements.length) {
-        console.log("Synchronizing slide queue with DOM elements");
-        syncSlideQueueWithDOM();
-    }
-    
     return false;
+}
+
+function handlePreviewClick() {
+    // 슬라이드가 없는 경우 경고창이 한 번만 뜨도록 수정
+    if (checkSlideQueueEmpty()) {
+        return;
+    }
+
+    openPreviewWindow();
 }
 
 function syncSlideQueueWithDOM() {
