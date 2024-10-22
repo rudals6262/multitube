@@ -810,11 +810,23 @@ function addEmptySlide() {
 function setupEmptySlide() {
     const emptySlide = document.querySelector('.empty-slide');
     if (emptySlide) {
+        // 초기 로드 시 깜빡거림 적용
+        emptySlide.classList.add('selected');
+
+        // 깜빡거림이 끝나면 'selected' 클래스 제거 (1.5초 후)
+        setTimeout(() => {
+            emptySlide.classList.remove('selected');
+        }, 4500);  // 깜빡거림 3번 (1.5초 * 3 = 4500ms)
+
+        // 클릭 시에는 다시 깜빡거리지 않게 설정
         emptySlide.addEventListener('click', () => {
             document.querySelectorAll('.slide, .empty-slide').forEach(slide => {
                 slide.classList.remove('selected');
+                slide.classList.remove('clicked');  // 이전 선택에서 'clicked' 상태 제거
             });
+        
             emptySlide.classList.add('selected');
+            emptySlide.classList.add('clicked');  // 깜빡거림이 발생하지 않도록 'clicked' 추가
             resetMediabox();
         });
     }

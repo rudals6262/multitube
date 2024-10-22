@@ -313,13 +313,13 @@ body {
 }
 
 .empty-slide .outline-effect {
+    animation: fade-blink 1.5s ease-in-out forwards 3;
     border: none;
 }
 
 /* .empty-slide.selected에 아웃라인 및 깜빡거리는 효과 추가 */
 .empty-slide.selected .outline-effect {
-    box-shadow: 0 0 0 3px #ff6f00; /* 2px 옵셋을 가진 아웃라인 효과 */
-    animation: fade-blink 1.5s ease-in-out forwards 3; /* 깜빡거리는 효과는 처음에만 3번 실행 */
+    animation: fade-blink 1.5s ease-in-out forwards 3;
 }
 
 @keyframes fade-blink {
