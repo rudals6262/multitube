@@ -871,15 +871,15 @@ function addSlide() {
         id: slideId,
         type: 'video',
         videoId,
-        startTime, // 밀리초 단위
-        endTime,   // 밀리초 단위
-        videoDuration: videoDuration * 1000, // 밀리초 단위로 저장
+        startTime,
+        endTime,
+        videoDuration: videoDuration * 1000,
         videoLink: updatedUrl
     });
 
-    // 슬라이드 추가 후 슬라이드 큐 상태 확인
     console.log("Slide added. Current slideQueue:", slideQueue);
-
+    
+    // 슬라이드 요소를 DOM에 추가
     const slidesContainer = document.querySelector('.slides');
     const newSlide = document.createElement('div');
     newSlide.className = 'slide';
@@ -904,19 +904,9 @@ function addSlide() {
         removeSlide(slideId);
     });
 
-    makeSlidesSortable();
-    document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
-    document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
-    document.querySelector('.empty-slide').classList.remove('selected');
-
+    // 슬라이드가 추가된 후 DOM과 동기화
     syncSlideQueueWithDOM();
-    
-    makeSlidesSortable();
-    document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('selected'));
-    document.querySelector(`.slide[data-id="${slideId}"]`).classList.add('selected');
-    document.querySelector('.empty-slide').classList.remove('selected');
 }
-
 
 function openPreviewWindow() {
     const groupTitle = document.querySelector('.group-title input').value;
@@ -1252,9 +1242,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.YT) {
         onYouTubeIframeAPIReady();
     } else {
-        var tag = document.createElement('script');
+        const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
+        const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
 
