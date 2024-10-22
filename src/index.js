@@ -305,7 +305,7 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
     function moveThumb(thumb, event, isStart) {
         const rect = sliderTrack.getBoundingClientRect();
         let percentage = ((event.clientX - rect.left) / rect.width) * 100;
-        percentage = Math.max(0, Math.min(percentage, 100));  // 0%에서 100% 사이로 값 제한
+        percentage = Math.max(0, Math.min(percentage, 100));
     
         if (isStart) {
             if (percentage >= parseFloat(endThumb.style.left)) {
@@ -313,19 +313,18 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
             }
             thumb.style.left = `${percentage}%`;
             updateSliderRange();
+            const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
+            const endTime = (parseFloat(endThumb.style.left) / 100) * videoDuration;
+            playSegment(startTime, endTime); // 슬라이더 레인지 영역 재생
         } else {
             if (percentage <= parseFloat(startThumb.style.left)) {
                 percentage = parseFloat(startThumb.style.left) + (1 / videoDuration * 100);
             }
-    
             const endTime = (percentage / 100) * videoDuration;
-    
-            // 0.3초 전까지 재생하고 구간 재생
-            playSegment(endTime - 300, endTime).then(() => {
+            playSegment(endTime - 0.3, endTime).then(() => {
                 const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
-                playSegmentLoop(startTime, endTime);
+                playSegment(startTime, endTime);
             });
-    
             thumb.style.left = `${percentage}%`;
             updateSliderRange();
         }
@@ -389,21 +388,21 @@ function playSegment(startTime, endTime) {
         }
 
         if (player && player.seekTo && typeof player.seekTo === 'function') {
-            player.seekTo(startTime / 1000);  // 밀리초를 초 단위로 변환하여 재생 시작
+            player.seekTo(startTime); // 초 단위로
             player.playVideo();
 
             checkEndInterval = setInterval(() => {
                 if (player && player.getCurrentTime && typeof player.getCurrentTime === 'function') {
-                    const currentTime = player.getCurrentTime() * 1000;  // 밀리초로 변환
+                    const currentTime = player.getCurrentTime();
                     updateCurrentTimeIndicator();
                     if (currentTime >= endTime) {
                         player.pauseVideo();
-                        player.seekTo(startTime / 1000);  // 시작점으로 돌아감
-                        clearInterval(checkEndInterval);
+                        player.seekTo(startTime);
+                        clearInsterval(checkEndInterval);
                         resolve();
                     }
                 }
-            }, 100);  // 100ms마다 체크
+            }, 100);
         }
     });
 }
@@ -822,12 +821,9 @@ function setupEmptySlide() {
         // 클릭 시에는 다시 깜빡거리지 않게 설정
         emptySlide.addEventListener('click', () => {
             document.querySelectorAll('.slide, .empty-slide').forEach(slide => {
-                slide.classList.remove('selected');
-                slide.classList.remove('clicked');  // 이전 선택에서 'clicked' 상태 제거
+                slide.classList.remove('selected');  // 다른 슬라이드의 선택 상태 해제
             });
-        
-            emptySlide.classList.add('selected');
-            emptySlide.classList.add('clicked');  // 깜빡거림이 발생하지 않도록 'clicked' 추가
+            emptySlide.classList.add('selected');  // 빈 슬라이드를 선택, 하지만 깜빡거림 없음
             resetMediabox();
         });
     }
