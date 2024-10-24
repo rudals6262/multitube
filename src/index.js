@@ -901,9 +901,9 @@ function hideMediabox() {
 function showMediaButtons() {
     const mediaboxContent = document.getElementById('mediabox-content');
     mediaboxContent.innerHTML = `
-        <div class="buttons">
-            <button onclick="addVideoInputFields()">동영상</button>
-            <button onclick="addImageInputFields()">이미지</button>
+        <div class="media-buttons">
+            <button onclick="handleButtonClick(event)">동영상</button>
+            <button onclick="handleButtonClick(event)">이미지</button>
         </div>
     `;
     showMediabox();
@@ -994,15 +994,12 @@ function openPreviewWindow() {
 function addImageInputFields() {
     const mediaboxContent = document.getElementById('mediabox-content');
     mediaboxContent.innerHTML = `
-        <div class="input-group">
+        <div class="image-input-container">
             <input type="file" id="imageInput" accept="image/*">
-            <input type="number" id="imageDuration" placeholder="Duration (seconds)" min="1" value="5">
+            <input type="number" id="imageDuration" placeholder="재생 시간(초)" value="5">
         </div>
-        <div class="action-buttons">
-            <button class="media-select" onclick="resetMediabox()">미디어 선택</button>
-            <div class="confirm-buttons">
-                <button class="confirm" onclick="addImageToMediabox()">확인</button>
-            </div>
+        <div class="button-container">
+            <button onclick="addImageToMediabox()">확인</button>
         </div>
     `;
 }

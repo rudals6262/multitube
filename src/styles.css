@@ -108,6 +108,13 @@ body {
     gap: 20px;
 }
 
+.media-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+
 .buttons button, .action-buttons button {
     cursor: pointer;
     background: #ccc;
