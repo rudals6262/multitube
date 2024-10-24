@@ -69,7 +69,7 @@ function addVideoInputFields() {
                         <div class="slider-range"></div>
                         <div class="slider-left-thumb" id="startThumb"></div>
                         <div class="slider-right-thumb" id="endThumb"></div>
-                        <div class="current-time-indicator" id="currentTimeIndicator" style="cursor: pointer;"></div>
+                        <div class="current-time-indicator" id="currentTimeIndicator"></div>
                     </div>
                 </div>
             </div>    
@@ -619,14 +619,12 @@ function setupEventListeners() {
 }
 
 function handleButtonClick(e) {
-    const buttonText = e.target.innerText.trim();
-    if (buttonText === '동영상') {
+    if (e.target.textContent === '동영상') {
         addVideoInputFields();
-    } else if (buttonText === '이미지') {
+    } else if (e.target.textContent === '이미지') {
         addImageInputFields();
     }
 }
-
 
 function checkSlideQueueEmpty() {
     const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
@@ -904,17 +902,10 @@ function showMediaButtons() {
     const mediaboxContent = document.getElementById('mediabox-content');
     mediaboxContent.innerHTML = `
         <div class="buttons">
-            <button class="media-button video-btn">동영상</button>
-            <button class="media-button image-btn">이미지</button>
+            <button onclick="addVideoInputFields()">동영상</button>
+            <button onclick="addImageInputFields()">이미지</button>
         </div>
     `;
-
-    // 버튼에 이벤트 리스너 직접 추가
-    const buttons = mediaboxContent.querySelectorAll('.media-button');
-    buttons.forEach(button => {
-        button.addEventListener('click', handleButtonClick);
-    });
-
     showMediabox();
 }
 
@@ -1003,55 +994,17 @@ function openPreviewWindow() {
 function addImageInputFields() {
     const mediaboxContent = document.getElementById('mediabox-content');
     mediaboxContent.innerHTML = `
-        <div class="image-input-container">
+        <div class="input-group">
             <input type="file" id="imageInput" accept="image/*">
-            <input type="number" id="imageDuration" placeholder="재생 시간(초)" value="5">
+            <input type="number" id="imageDuration" placeholder="Duration (seconds)" min="1" value="5">
         </div>
-        <div class="button-container">
-            <button onclick="addImageToMediabox()" class="confirm-btn">확인</button>
+        <div class="action-buttons">
+            <button class="media-select" onclick="resetMediabox()">미디어 선택</button>
+            <div class="confirm-buttons">
+                <button class="confirm" onclick="addImageSlide()">확인</button>
+            </div>
         </div>
     `;
-}
-
-function addImageToMediabox() {
-    const fileInput = document.getElementById('imageInput');
-    const duration = parseInt(document.getElementById('imageDuration').value) || 5;
-
-    if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            const imageUrl = e.target.result;
-            const imageContainer = document.createElement('div');
-            imageContainer.className = 'image-container';
-            
-            // 비디오 프레임과 동일한 크기로 이미지 컨테이너 스타일 설정
-            imageContainer.style.width = '100%';
-            imageContainer.style.height = '360px'; // 일반적인 16:9 비디오 프레임 높이
-            imageContainer.style.position = 'relative';
-            
-            imageContainer.innerHTML = `
-                <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: contain;">
-            `;
-
-            const videoContainer = document.querySelector('.video-container');
-            if (videoContainer) {
-                videoContainer.style.display = 'none';
-            }
-            
-            const mediaboxContent = document.getElementById('mediabox-content');
-            mediaboxContent.innerHTML = '';
-            mediaboxContent.appendChild(imageContainer);
-
-            // 이미지 슬라이드 추가
-            addImageSlide();
-        };
-
-        reader.readAsDataURL(file);
-    } else {
-        alert('이미지를 선택해주세요.');
-    }
 }
 
 function addImageSlide() {
@@ -1077,11 +1030,9 @@ function addImageSlide() {
             const newSlide = document.createElement('div');
             newSlide.className = 'slide';
             newSlide.dataset.id = slideId;
-            
-            // 미리보기 이미지 크기 조정
             newSlide.innerHTML = `
-                <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;">
-                <button class="slide-close">×</button>
+                <img src="${imageUrl}" alt="Uploaded Image" style="aspect-ratio: 16/9;">
+                <div class="slide-close">&times;</div>
             `;
 
             newSlide.addEventListener('click', () => handleSlideClick(slideId));
@@ -1106,6 +1057,8 @@ function addImageSlide() {
         };
 
         reader.readAsDataURL(file);
+    } else {
+        alert('이미지를 선택해주세요.');
     }
 }
 
@@ -1249,20 +1202,19 @@ function playSlides() {
             const slide = slideQueue[currentSlideIndex];
 
             if (slide.type === 'video') {
-                // 비디오 슬라이드 재생
                 playVideoSlide(slide).then(() => {
                     currentSlideIndex++;
-                    playNextSlide();  // 다음 슬라이드 재생
+                    playNextSlide();
                 });
             } else if (slide.type === 'image') {
-                // 이미지 슬라이드 재생
                 playImageSlide(slide).then(() => {
                     currentSlideIndex++;
-                    playNextSlide();  // 다음 슬라이드 재생
+                    playNextSlide();
                 });
             }
         }
     }
+
     playNextSlide();
 }
 
@@ -1298,20 +1250,7 @@ function playImageSlide(slide) {
     return new Promise((resolve) => {
         const imageContainer = document.createElement('div');
         imageContainer.className = 'image-slide';
-        imageContainer.style.position = 'fixed';
-        imageContainer.style.top = '0';
-        imageContainer.style.left = '0';
-        imageContainer.style.width = '100%';
-        imageContainer.style.height = '100%';
-        imageContainer.style.backgroundColor = '#000';
-        imageContainer.style.display = 'flex';
-        imageContainer.style.justifyContent = 'center';
-        imageContainer.style.alignItems = 'center';
-        
-        imageContainer.innerHTML = `
-            <img src="${slide.imageUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-        `;
-        
+        imageContainer.innerHTML = `<img src="${slide.imageUrl}" alt="Image Slide" style="width: 100%;">`;
         document.body.appendChild(imageContainer);
 
         setTimeout(() => {
