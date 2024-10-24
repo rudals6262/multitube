@@ -527,6 +527,7 @@ body {
 }
 
 .current-time-indicator {
+    position:absolute;
     width: 8px;
     height: 70px;
     border-radius: 4px;
