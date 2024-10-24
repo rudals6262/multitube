@@ -327,7 +327,7 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
             const startTime = (parseFloat(startThumb.style.left) / 100) * videoDuration;
             
             // 프리뷰 재생 후 전체 구간 재생
-            playSegment(endTime - 0.3, endTime, true).then(() => {
+            playSegment(endTime - 0.5, endTime, true).then(() => {
                 playSegment(startTime, endTime, false);
             });
         }
@@ -382,6 +382,49 @@ function moveStart(event) {
 function moveEnd(event) {
     const endThumb = document.getElementById('endThumb');
     moveThumb(endThumb, event, false);
+}
+
+function enableCurrentTimeIndicatorDragging() {
+    const currentTimeIndicator = document.getElementById('currentTimeIndicator');
+    const sliderTrack = document.querySelector('.slider-track');
+    const startThumb = document.getElementById('startThumb');
+    const endThumb = document.getElementById('endThumb');
+
+    let isDragging = false;
+
+    currentTimeIndicator.addEventListener('mousedown', function(event) {
+        event.preventDefault();
+        isDragging = true;
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', stopDragging);
+    });
+
+    function onMouseMove(event) {
+        if (isDragging) {
+            const rect = sliderTrack.getBoundingClientRect();
+            let percentage = ((event.clientX - rect.left) / rect.width) * 100;
+
+            // 구간 내에서만 움직일 수 있도록 제한
+            const startPercentage = parseFloat(startThumb.style.left);
+            const endPercentage = parseFloat(endThumb.style.left);
+            percentage = Math.max(startPercentage, Math.min(percentage, endPercentage));
+
+            // 현재 시간 인디케이터 위치 업데이트
+            currentTimeIndicator.style.left = `${percentage}%`;
+
+            // 비디오의 시간을 퍼센트에 맞게 설정
+            const startTime = (percentage / 100) * videoDuration;
+            player.seekTo(startTime / 1000);  // 밀리초 -> 초로 변환하여 비디오 이동
+        }
+    }
+
+    function stopDragging() {
+        if (isDragging) {
+            isDragging = false;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', stopDragging);
+        }
+    }
 }
 
 function playSegment(startTime, endTime, isPreview = false) {
@@ -1258,6 +1301,7 @@ Object.assign(window, {
 
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
+    enableCurrentTimeIndicatorDragging();  // 드래그 기능 활성화
 
     if (window.YT) {
         onYouTubeIframeAPIReady();
