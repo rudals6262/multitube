@@ -1017,18 +1017,26 @@ function addImageToMediabox() {
             const imageContainer = document.createElement('div');
             imageContainer.className = 'image-container';
             
+            // 비디오 프레임과 동일한 크기로 이미지 컨테이너 스타일 설정
+            imageContainer.style.width = '100%';
+            imageContainer.style.height = '360px'; // 일반적인 16:9 비디오 프레임 높이
+            imageContainer.style.position = 'relative';
+            
             imageContainer.innerHTML = `
-                <img src="${imageUrl}" alt="Uploaded Image" class="uploaded-image">
+                <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: contain;">
             `;
 
-            // 비디오 프레임 크기와 동일하게 이미지 설정
             const videoContainer = document.querySelector('.video-container');
             if (videoContainer) {
-                videoContainer.style.display = 'none';  // 비디오를 숨기고 이미지를 보여줌
+                videoContainer.style.display = 'none';
             }
+            
             const mediaboxContent = document.getElementById('mediabox-content');
-            mediaboxContent.innerHTML = '';  // 기존 내용 초기화 후 이미지 삽입
+            mediaboxContent.innerHTML = '';
             mediaboxContent.appendChild(imageContainer);
+
+            // 이미지 슬라이드 추가
+            addImageSlide();
         };
 
         reader.readAsDataURL(file);
@@ -1060,9 +1068,11 @@ function addImageSlide() {
             const newSlide = document.createElement('div');
             newSlide.className = 'slide';
             newSlide.dataset.id = slideId;
+            
+            // 미리보기 이미지 크기 조정
             newSlide.innerHTML = `
-                <img src="${imageUrl}" alt="Uploaded Image" style="aspect-ratio: 16/9;">
-                <div class="slide-close">&times;</div>
+                <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;">
+                <button class="slide-close">×</button>
             `;
 
             newSlide.addEventListener('click', () => handleSlideClick(slideId));
@@ -1087,8 +1097,6 @@ function addImageSlide() {
         };
 
         reader.readAsDataURL(file);
-    } else {
-        alert('이미지를 선택해주세요.');
     }
 }
 
@@ -1281,14 +1289,26 @@ function playImageSlide(slide) {
     return new Promise((resolve) => {
         const imageContainer = document.createElement('div');
         imageContainer.className = 'image-slide';
-        imageContainer.innerHTML = `<img src="${slide.imageUrl}" alt="Image Slide" style="width: 100%;">`;
+        imageContainer.style.position = 'fixed';
+        imageContainer.style.top = '0';
+        imageContainer.style.left = '0';
+        imageContainer.style.width = '100%';
+        imageContainer.style.height = '100%';
+        imageContainer.style.backgroundColor = '#000';
+        imageContainer.style.display = 'flex';
+        imageContainer.style.justifyContent = 'center';
+        imageContainer.style.alignItems = 'center';
+        
+        imageContainer.innerHTML = `
+            <img src="${slide.imageUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+        `;
+        
         document.body.appendChild(imageContainer);
 
-        // 지정된 시간(초) 동안 이미지 슬라이드를 표시
         setTimeout(() => {
-            document.body.removeChild(imageContainer);  // 이미지 슬라이드 제거
-            resolve();  // Promise를 해결하여 다음 슬라이드로 넘어갈 준비
-        }, slide.duration * 1000);  // 밀리초 단위로 변환하여 설정 시간 만큼 재생
+            document.body.removeChild(imageContainer);
+            resolve();
+        }, slide.duration * 1000);
     });
 }
 
