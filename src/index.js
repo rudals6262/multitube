@@ -1001,10 +1001,43 @@ function addImageInputFields() {
         <div class="action-buttons">
             <button class="media-select" onclick="resetMediabox()">미디어 선택</button>
             <div class="confirm-buttons">
-                <button class="confirm" onclick="addImageSlide()">확인</button>
+                <button class="confirm" onclick="addImageToMediabox()">확인</button>
             </div>
         </div>
     `;
+}
+
+function addImageToMediabox() {
+    const fileInput = document.getElementById('imageInput');
+    const duration = parseInt(document.getElementById('imageDuration').value) || 5;
+
+    if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const imageUrl = e.target.result;
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'image-container';
+            
+            imageContainer.innerHTML = `
+                <img src="${imageUrl}" alt="Uploaded Image" class="uploaded-image">
+            `;
+
+            // 비디오 프레임 크기와 동일하게 이미지 설정
+            const videoContainer = document.querySelector('.video-container');
+            if (videoContainer) {
+                videoContainer.style.display = 'none';  // 비디오를 숨기고 이미지를 보여줌
+            }
+            const mediaboxContent = document.getElementById('mediabox-content');
+            mediaboxContent.innerHTML = '';  // 기존 내용 초기화 후 이미지 삽입
+            mediaboxContent.appendChild(imageContainer);
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        alert('이미지를 선택해주세요.');
+    }
 }
 
 function addImageSlide() {
