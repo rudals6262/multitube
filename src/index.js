@@ -1202,19 +1202,20 @@ function playSlides() {
             const slide = slideQueue[currentSlideIndex];
 
             if (slide.type === 'video') {
+                // 비디오 슬라이드 재생
                 playVideoSlide(slide).then(() => {
                     currentSlideIndex++;
-                    playNextSlide();
+                    playNextSlide();  // 다음 슬라이드 재생
                 });
             } else if (slide.type === 'image') {
+                // 이미지 슬라이드 재생
                 playImageSlide(slide).then(() => {
                     currentSlideIndex++;
-                    playNextSlide();
+                    playNextSlide();  // 다음 슬라이드 재생
                 });
             }
         }
     }
-
     playNextSlide();
 }
 
@@ -1253,10 +1254,11 @@ function playImageSlide(slide) {
         imageContainer.innerHTML = `<img src="${slide.imageUrl}" alt="Image Slide" style="width: 100%;">`;
         document.body.appendChild(imageContainer);
 
+        // 지정된 시간(초) 동안 이미지 슬라이드를 표시
         setTimeout(() => {
-            document.body.removeChild(imageContainer);
-            resolve();
-        }, slide.duration * 1000);
+            document.body.removeChild(imageContainer);  // 이미지 슬라이드 제거
+            resolve();  // Promise를 해결하여 다음 슬라이드로 넘어갈 준비
+        }, slide.duration * 1000);  // 밀리초 단위로 변환하여 설정 시간 만큼 재생
     });
 }
 
