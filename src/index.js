@@ -392,9 +392,11 @@ function enableCurrentTimeIndicatorDragging() {
 
     let isDragging = false;
 
+    // 마우스 클릭 시 드래그 시작
     currentTimeIndicator.addEventListener('mousedown', function(event) {
         event.preventDefault();
         isDragging = true;
+
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', stopDragging);
     });
@@ -409,15 +411,16 @@ function enableCurrentTimeIndicatorDragging() {
             const endPercentage = parseFloat(endThumb.style.left);
             percentage = Math.max(startPercentage, Math.min(percentage, endPercentage));
 
-            // 현재 시간 인디케이터 위치 업데이트
+            // 인디케이터의 위치를 설정된 구간 내에서만 업데이트
             currentTimeIndicator.style.left = `${percentage}%`;
 
-            // 비디오의 시간을 퍼센트에 맞게 설정
-            const startTime = (percentage / 100) * videoDuration;
-            player.seekTo(startTime / 1000);  // 밀리초 -> 초로 변환하여 비디오 이동
+            // 비디오 재생 시간 업데이트 (밀리초 -> 초로 변환)
+            const newTime = (percentage / 100) * videoDuration;
+            player.seekTo(newTime / 1000);  // 밀리초를 초로 변환하여 seekTo 호출
         }
     }
 
+    // 마우스 클릭 해제 시 드래그 종료
     function stopDragging() {
         if (isDragging) {
             isDragging = false;
