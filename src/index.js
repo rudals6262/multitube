@@ -69,7 +69,7 @@ function addVideoInputFields() {
                         <div class="slider-range"></div>
                         <div class="slider-left-thumb" id="startThumb"></div>
                         <div class="slider-right-thumb" id="endThumb"></div>
-                        <div class="current-time-indicator" id="currentTimeIndicator"></div>
+                        <div class="current-time-indicator" id="currentTimeIndicator" style="cursor: pointer;"></div>
                     </div>
                 </div>
             </div>    
@@ -332,7 +332,53 @@ function setupSlider(startPercentage = 0, endPercentage = 100) {
             });
         }
     }
+
+    let isDraggingIndicator = false;
+
+    function handleIndicatorMove(event) {
+        if (!isDraggingIndicator) return;
+        
+        const rect = sliderTrack.getBoundingClientRect();
+        let percentage = ((event.clientX - rect.left) / rect.width) * 100;
+        
+        // 시작과 끝 썸브 사이로 제한
+        const startPos = parseFloat(startThumb.style.left);
+        const endPos = parseFloat(endThumb.style.left);
+        percentage = Math.max(startPos, Math.min(percentage, endPos));
+        
+        currentTimeIndicator.style.left = `${percentage}%`;
+        
+        // 비디오 시간 업데이트
+        const totalRange = endPos - startPos;
+        const relativePosition = (percentage - startPos) / totalRange;
+        const startTime = (startPos / 100) * videoDuration;
+        const endTime = (endPos / 100) * videoDuration;
+        const newTime = startTime + (relativePosition * (endTime - startTime));
+        
+        if (player && player.seekTo) {
+            player.seekTo(newTime);
+        }
+    }
    
+    function startIndicatorDrag(event) {
+        isDraggingIndicator = true;
+        event.preventDefault();
+        document.addEventListener('mousemove', handleIndicatorMove);
+        document.addEventListener('mouseup', stopIndicatorDrag);
+    }
+
+    function stopIndicatorDrag() {
+        isDraggingIndicator = false;
+        document.removeEventListener('mousemove', handleIndicatorMove);
+        document.removeEventListener('mouseup', stopIndicatorDrag);
+    }
+
+    // 커런트 타임 인디케이터에 드래그 이벤트 추가
+    if (currentTimeIndicator) {
+        currentTimeIndicator.style.cursor = 'pointer';
+        currentTimeIndicator.addEventListener('mousedown', startIndicatorDrag);
+    }
+    
     // 마우스 이벤트 처리 함수들
     function handleMoveStart(event) {
         moveThumb(startThumb, event, true);
@@ -382,52 +428,6 @@ function moveStart(event) {
 function moveEnd(event) {
     const endThumb = document.getElementById('endThumb');
     moveThumb(endThumb, event, false);
-}
-
-function enableCurrentTimeIndicatorDragging() {
-    const currentTimeIndicator = document.getElementById('currentTimeIndicator');
-    const sliderTrack = document.querySelector('.slider-track');
-    const startThumb = document.getElementById('startThumb');
-    const endThumb = document.getElementById('endThumb');
-
-    let isDragging = false;
-
-    // 마우스 클릭 시 드래그 시작
-    currentTimeIndicator.addEventListener('mousedown', function(event) {
-        event.preventDefault();
-        isDragging = true;
-
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', stopDragging);
-    });
-
-    function onMouseMove(event) {
-        if (isDragging) {
-            const rect = sliderTrack.getBoundingClientRect();
-            let percentage = ((event.clientX - rect.left) / rect.width) * 100;
-
-            // 구간 내에서만 움직일 수 있도록 제한
-            const startPercentage = parseFloat(startThumb.style.left);
-            const endPercentage = parseFloat(endThumb.style.left);
-            percentage = Math.max(startPercentage, Math.min(percentage, endPercentage));
-
-            // 인디케이터의 위치를 설정된 구간 내에서만 업데이트
-            currentTimeIndicator.style.left = `${percentage}%`;
-
-            // 비디오 재생 시간 업데이트 (밀리초 -> 초로 변환)
-            const newTime = (percentage / 100) * videoDuration;
-            player.seekTo(newTime / 1000);  // 밀리초를 초로 변환하여 seekTo 호출
-        }
-    }
-
-    // 마우스 클릭 해제 시 드래그 종료
-    function stopDragging() {
-        if (isDragging) {
-            isDragging = false;
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', stopDragging);
-        }
-    }
 }
 
 function playSegment(startTime, endTime, isPreview = false) {
@@ -1304,7 +1304,6 @@ Object.assign(window, {
 
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
-    enableCurrentTimeIndicatorDragging();  // 드래그 기능 활성화
 
     if (window.YT) {
         onYouTubeIframeAPIReady();
