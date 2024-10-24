@@ -527,11 +527,11 @@ body {
 }
 
 .current-time-indicator {
-    position:absolute;
     width: 8px;
     height: 70px;
     border-radius: 4px;
     background-color: #ff6f00;
     z-index: 5;
     cursor:pointer;
+    user-select: none;  /* 드래그 시 텍스트 선택 방지 */
 }
