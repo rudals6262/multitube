@@ -901,7 +901,7 @@ function hideMediabox() {
 function showMediaButtons() {
     const mediaboxContent = document.getElementById('mediabox-content');
     mediaboxContent.innerHTML = `
-        <div class="media-buttons">
+        <div class="buttons">
             <button onclick="handleButtonClick(event)">동영상</button>
             <button onclick="handleButtonClick(event)">이미지</button>
         </div>
