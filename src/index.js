@@ -619,12 +619,14 @@ function setupEventListeners() {
 }
 
 function handleButtonClick(e) {
-    if (e.target.textContent === '동영상') {
+    const buttonText = e.target.innerText.trim();
+    if (buttonText === '동영상') {
         addVideoInputFields();
-    } else if (e.target.textContent === '이미지') {
+    } else if (buttonText === '이미지') {
         addImageInputFields();
     }
 }
+
 
 function checkSlideQueueEmpty() {
     const slideElements = document.querySelectorAll('.slide:not(.empty-slide)');
@@ -902,10 +904,17 @@ function showMediaButtons() {
     const mediaboxContent = document.getElementById('mediabox-content');
     mediaboxContent.innerHTML = `
         <div class="buttons">
-            <button onclick="handleButtonClick(event)">동영상</button>
-            <button onclick="handleButtonClick(event)">이미지</button>
+            <button class="media-button video-btn">동영상</button>
+            <button class="media-button image-btn">이미지</button>
         </div>
     `;
+
+    // 버튼에 이벤트 리스너 직접 추가
+    const buttons = mediaboxContent.querySelectorAll('.media-button');
+    buttons.forEach(button => {
+        button.addEventListener('click', handleButtonClick);
+    });
+
     showMediabox();
 }
 
@@ -999,7 +1008,7 @@ function addImageInputFields() {
             <input type="number" id="imageDuration" placeholder="재생 시간(초)" value="5">
         </div>
         <div class="button-container">
-            <button onclick="addImageToMediabox()">확인</button>
+            <button onclick="addImageToMediabox()" class="confirm-btn">확인</button>
         </div>
     `;
 }
