@@ -995,7 +995,7 @@ function addImageInputFields() {
     const mediaboxContent = document.getElementById('mediabox-content');
     mediaboxContent.innerHTML = `
         <div class="image-container">
-            <div class="image-frame" style="display: block;">
+            <div class="image-frame" id="imageFrame" style="display: none;">
                 <div id="imagePreview"></div> <!-- 이미지 미리보기 영역 -->
             </div>
             <div class="time-slider-wrapper">
@@ -1031,19 +1031,22 @@ function addImageInputFields() {
 function previewImage() {
     const fileInput = document.getElementById('imageInput');
     const imagePreview = document.getElementById('imagePreview');
+    const imageFrame = document.getElementById('imageFrame');
 
     if (fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
         reader.onload = function (e) {
             imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image" class="uploaded-image">`;
+            imageFrame.style.display = 'flex';  // 이미지가 업로드되면 이미지 프레임을 표시
         };
         reader.readAsDataURL(fileInput.files[0]);
     } else {
         imagePreview.innerHTML = '';  // 파일이 선택되지 않으면 미리보기 제거
+        imageFrame.style.display = 'none';  // 이미지가 없을 경우 프레임 숨기기
     }
 }
 
-// 이미지 슬라이드 목록에 추가
+// 이미지 슬라이드 목록에 추가 및 미리보기
 function addImageToMediabox() {
     const fileInput = document.getElementById('imageInput');
     const duration = parseInt(document.getElementById('imageDuration').value) || 5;
@@ -1074,7 +1077,6 @@ function addImageToMediabox() {
                 <div class="slide-close">&times;</div>
             `;
 
-            // 슬라이드 클릭 시 편집 기능 활성화
             newSlide.addEventListener('click', () => handleSlideClick(slideId));
 
             const emptySlide = slidesContainer.querySelector('.empty-slide');
