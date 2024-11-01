@@ -48,15 +48,14 @@ body {
     border-radius: 10px;
 }
 
-/* Image Container Styles */
 #imageContainer {
+    display: none; /* 기본적으로 숨김 */
     width: 100%;
     max-width: 900px;
-    margin: 0 auto;
-    display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    overflow: hidden;
 }
 
 #imageContainer img {
