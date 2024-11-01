@@ -996,7 +996,7 @@ function addImageInputFields() {
     mediaboxContent.innerHTML = `
         <div class="video-container">
             <div class="video-frame" style="display: block;">
-                <div id="imagePreview"></div> <!-- 이미지 미리보기 영역 -->
+                <div id="imagePreview" class="image-preview-frame"></div> <!-- 이미지 미리보기 영역 -->
             </div>
             <div class="time-slider-wrapper">
                 <div class="time-slider-container" style="display: block; overflow-x: auto;">
@@ -1035,7 +1035,7 @@ function previewImage() {
     if (fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
         reader.onload = function (e) {
-            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image" style="width: 100%; height: auto;">`;
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image" class="previewed-image">`;
         };
         reader.readAsDataURL(fileInput.files[0]);
     } else {
