@@ -50,17 +50,20 @@ body {
 
 .image-preview-frame {
     width: 100%;
-    height: 300px;  /* 비디오 프레임 높이와 동일하게 설정 */
+    max-width: 1920px;
+    aspect-ratio: 16 / 9;  /* 1920:1080 비율 */
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    background-color: #000;  /* 배경색을 추가하여 비율을 유지 */
 }
 
 .previewed-image {
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain;  /* 비율을 유지하며 이미지가 프레임에 맞게 표시되도록 설정 */
+    object-fit: contain;  /* 원본 비율을 유지하면서 프레임 안에 맞춤 */
 }
 
 /* Overlay Play Button Styles */
