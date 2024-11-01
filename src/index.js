@@ -994,17 +994,67 @@ function openPreviewWindow() {
 function addImageInputFields() {
     const mediaboxContent = document.getElementById('mediabox-content');
     mediaboxContent.innerHTML = `
-        <div class="input-group">
-            <input type="file" id="imageInput" accept="image/*">
-            <input type="number" id="imageDuration" placeholder="Duration (seconds)" min="1" value="5">
-        </div>
-        <div class="action-buttons">
-            <button class="media-select" onclick="resetMediabox()">미디어 선택</button>
-            <div class="confirm-buttons">
-                <button class="confirm" onclick="addImageSlide()">확인</button>
+        <div class="video-container">
+            <div class="video-frame" style="display: block;">
+                <div id="imagePreview"></div> <!-- 이미지 프레임 추가 -->
+            </div>
+            <div class="time-slider-wrapper">
+                <div class="time-slider-container" style="display: block; overflow-x: auto;">
+                    <div class="slider-track" style="width: 100%;">
+                        <div class="slider-range"></div>
+                        <div class="slider-left-thumb" id="startThumb"></div>
+                        <div class="slider-right-thumb" id="endThumb"></div>
+                        <div class="current-time-indicator" id="currentTimeIndicator"></div>
+                    </div>
+                </div>
+            </div>    
+            <div class="input-group">
+                <input type="file" id="imageInput" accept="image/*">
+                <input type="number" id="imageDuration" placeholder="Duration (seconds)" min="1" value="5">
+                <div class="plus-minus-buttons" style="display: none;">
+                    <button onclick="zoomOut()">-</button>
+                    <button onclick="zoomIn()">+</button>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="media-select" onclick="resetMediabox()">미디어 선택</button>
+                <div class="confirm-buttons" style="display: flex;">
+                    <button class="confirm" onclick="addImageToMediabox()">확인</button>
+                </div>
             </div>
         </div>
     `;
+}
+
+function addImageToMediabox() {
+    const fileInput = document.getElementById('imageInput');
+    const duration = parseInt(document.getElementById('imageDuration').value) || 5;
+
+    if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const imageUrl = e.target.result;
+            const imagePreview = document.getElementById('imagePreview');
+            
+            // 이미지 프레임 안에 이미지 삽입
+            imagePreview.innerHTML = `<img src="${imageUrl}" alt="Uploaded Image" style="width: 100%; height: auto;">`;
+
+            // 슬라이드에 추가될 이미지를 큐에 저장
+            const slideId = createUniqueSlideId();
+            slideQueue.push({
+                id: slideId,
+                type: 'image',
+                imageUrl,
+                duration
+            });
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        alert('이미지를 선택해주세요.');
+    }
 }
 
 function addImageSlide() {
