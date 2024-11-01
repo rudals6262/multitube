@@ -39,20 +39,12 @@ async function initializeYouTubePlayer() {
     });
 }
 
-function startSlideshow() {
+async function startSlideshow() {
     isPlaying = true;
-    slideshowFinished = false;
-    currentSlideIndex = 0;
+    slideshowFinished = false; // 슬라이드쇼가 시작될 때 false로 설정
+    currentSlideIndex = 0; // 첫 번째 슬라이드부터 시작
     document.getElementById('overlayPlayButton').style.display = 'none';
-    displaySlide(slideQueue[currentSlideIndex]);
-}
-
-function displaySlide(slide) {
-    if (slide.type === 'video') {
-        playVideoSlide(slide);
-    } else if (slide.type === 'image') {
-        playImageSlide(slide);
-    }
+    playSlideAtIndex(currentSlideIndex);
 }
 
 function playSlideAtIndex(index) {
@@ -79,7 +71,7 @@ function playSlideAtIndex(index) {
 
 function playVideoSlide(slide) {
     const { videoId, startTime, endTime } = slide;
-    document.getElementById('videoContainer').style.display = 'block';
+    document.querySelector('.video-container').style.display = 'block';
     document.getElementById('imageContainer').style.display = 'none';
 
     // 비디오 재생 시간 출력
@@ -115,9 +107,12 @@ function playVideoSlide(slide) {
 
 
 function playImageSlide(slide) {
-    document.getElementById('videoContainer').style.display = 'none';
+    const { imageUrl, duration } = slide;
+    document.querySelector('.video-container').style.display = 'none';
     document.getElementById('imageContainer').style.display = 'flex';
-    document.getElementById('previewImage').src = slide.imageUrl;
+
+    const previewImage = document.getElementById('previewImage');
+    previewImage.src = imageUrl;
 
     currentSlideTimeout = setTimeout(() => {
         if (isPlaying && currentSlideIndex < slideQueue.length - 1) {
@@ -125,7 +120,7 @@ function playImageSlide(slide) {
         } else {
             finishSlideshow();
         }
-    }, slide.duration * 1000);
+    }, duration * 1000);
 }
 
 function prevSlide() {
