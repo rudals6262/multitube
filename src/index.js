@@ -976,39 +976,27 @@ function addSlide() {
 
 // 미리보기 윈도우 로직 수정
 function openPreviewWindow() {
-    const groupTitle = document.querySelector('.group-title input')?.value || '';
-    const description = document.querySelector('.description textarea')?.value || '';
+    const groupTitle = document.querySelector('.group-title input').value;
+    const description = document.querySelector('.description textarea').value;
 
-    if (!slideQueue || slideQueue.length === 0) {
-        alert('미리보기할 슬라이드가 없습니다.');
-        return;
-    }
+    const slideQueueParam = encodeURIComponent(JSON.stringify(slideQueue));
+    const groupTitleParam = encodeURIComponent(groupTitle);
+    const descriptionParam = encodeURIComponent(description);
 
-    try {
-        const slideQueueParam = encodeURIComponent(JSON.stringify(slideQueue));
-        const groupTitleParam = encodeURIComponent(groupTitle);
-        const descriptionParam = encodeURIComponent(description);
-
-        const url = `preview.html?slideQueue=${slideQueueParam}&groupTitle=${groupTitleParam}&description=${descriptionParam}`;
-        window.open(url, 'previewWindow', 'width=800,height=860');
-    } catch (error) {
-        console.error('미리보기 창 열기 실패:', error);
-        alert('미리보기를 여는 중 오류가 발생했습니다.');
-    }
+    const url = `preview.html?slideQueue=${slideQueueParam}&groupTitle=${groupTitleParam}&description=${descriptionParam}`;
+    window.open(url, 'previewWindow', 'width=800,height=860');
 }
 
 function addImageInputFields() {
     const mediaboxContent = document.getElementById('mediabox-content');
-    if (!mediaboxContent) return;
-
     mediaboxContent.innerHTML = `
         <div class="image-container">
-            <div class="image-frame" id="imageFrame">
-                <div id="imagePreview"></div>
+            <div class="image-frame" id="imageFrame" style="display: none;">
+                <div id="imagePreview"></div> <!-- 이미지 미리보기 영역 -->
             </div>
             <div class="time-slider-wrapper">
-                <div class="time-slider-container">
-                    <div class="slider-track">
+                <div class="time-slider-container" style="display: block; overflow-x: auto;">
+                    <div class="slider-track" style="width: 100%;">
                         <div class="slider-range"></div>
                         <div class="slider-left-thumb" id="startThumb"></div>
                         <div class="slider-right-thumb" id="endThumb"></div>
@@ -1022,84 +1010,52 @@ function addImageInputFields() {
             </div>
             <div class="action-buttons">
                 <button class="media-select" onclick="resetMediabox()">미디어 선택</button>
-                <div class="confirm-buttons">
+                <div class="confirm-buttons" style="display: flex;">
                     <button id="confirmImageButton" class="confirm">확인</button>
                 </div>
             </div>
         </div>
     `;
 
-    setupImageHandlers();
+    // 파일 선택 시 미리보기 함수 연결
+    document.getElementById('imageInput').addEventListener('change', previewImage);
+    // "확인" 버튼에 이벤트 리스너 추가
+    document.getElementById('confirmImageButton').addEventListener('click', addImageToMediabox);
 }
 
-function setupImageHandlers() {
-    const imageInput = document.getElementById('imageInput');
-    const confirmButton = document.getElementById('confirmImageButton');
-    
-    if (imageInput) {
-        imageInput.addEventListener('change', previewImage);
-    }
-    if (confirmButton) {
-        confirmButton.addEventListener('click', addImageToMediabox);
-    }
-}
-
-function previewImage(event) {
-    const fileInput = event.target;
+// 이미지 미리보기를 위한 함수
+function previewImage() {
+    const fileInput = document.getElementById('imageInput');
     const imagePreview = document.getElementById('imagePreview');
     const imageFrame = document.getElementById('imageFrame');
 
-    if (!imagePreview || !imageFrame) return;
-
     if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        
-        // 이미지 파일 검증
-        if (!file.type.startsWith('image/')) {
-            alert('이미지 파일만 업로드 가능합니다.');
-            fileInput.value = '';
-            return;
-        }
-
         const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'uploaded-image';
-            img.alt = '업로드된 이미지';
-
-            imagePreview.innerHTML = '';
-            imagePreview.appendChild(img);
-            imageFrame.style.display = 'flex';
+        reader.onload = function (e) {
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image" class="uploaded-image">`;
+            imageFrame.style.display = 'flex';  // 이미지가 업로드되면 이미지 프레임을 표시
         };
-        reader.onerror = function() {
-            alert('이미지를 읽는 중 오류가 발생했습니다.');
-            fileInput.value = '';
-        };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(fileInput.files[0]);
     } else {
-        imagePreview.innerHTML = '';
-        imageFrame.style.display = 'none';
+        imagePreview.innerHTML = '';  // 파일이 선택되지 않으면 미리보기 제거
+        imageFrame.style.display = 'none';  // 이미지가 없을 경우 프레임 숨기기
     }
 }
 
+// 이미지 슬라이드 목록에 추가 및 미리보기
 function addImageToMediabox() {
     const fileInput = document.getElementById('imageInput');
-    const durationInput = document.getElementById('imageDuration');
-
-    if (!fileInput || !durationInput) return;
-
-    const duration = parseInt(durationInput.value) || 5;
+    const duration = parseInt(document.getElementById('imageDuration').value) || 5;
 
     if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
         const reader = new FileReader();
 
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const imageUrl = e.target.result;
             const slideId = createUniqueSlideId();
 
-            // 슬라이드 큐에 추가
+            // 슬라이드 큐에 이미지 추가
             slideQueue.push({
                 id: slideId,
                 type: 'image',
@@ -1107,13 +1063,18 @@ function addImageToMediabox() {
                 duration
             });
 
-            // 슬라이드 엘리먼트 생성
+            // 슬라이드 목록에 이미지 추가
             const slidesContainer = document.querySelector('.slides');
-            if (!slidesContainer) return;
+            const newSlide = document.createElement('div');
+            newSlide.className = 'slide';
+            newSlide.dataset.id = slideId;
+            newSlide.innerHTML = `
+                <img src="${imageUrl}" alt="Uploaded Image" style="aspect-ratio: 16/9;">
+                <div class="slide-close">&times;</div>
+            `;
 
-            const newSlide = createSlideElement(slideId, imageUrl);
-            
-            // 슬라이드 추가
+            newSlide.addEventListener('click', () => handleSlideClick(slideId));
+
             const emptySlide = slidesContainer.querySelector('.empty-slide');
             if (emptySlide) {
                 slidesContainer.insertBefore(newSlide, emptySlide);
@@ -1121,17 +1082,13 @@ function addImageToMediabox() {
                 slidesContainer.appendChild(newSlide);
             }
 
-            makeSlidesSortable();
+            // 슬라이드 삭제 버튼
+            newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
+                event.stopPropagation();
+                removeSlide(slideId);
+            });
 
-            // 입력 필드 초기화
-            fileInput.value = '';
-            durationInput.value = '5';
-            document.getElementById('imageFrame').style.display = 'none';
-            document.getElementById('imagePreview').innerHTML = '';
-        };
-
-        reader.onerror = function() {
-            alert('이미지를 처리하는 중 오류가 발생했습니다.');
+            makeSlidesSortable(); // 슬라이드 정렬 가능하도록
         };
 
         reader.readAsDataURL(file);
@@ -1140,26 +1097,7 @@ function addImageToMediabox() {
     }
 }
 
-function createSlideElement(slideId, imageUrl) {
-    const newSlide = document.createElement('div');
-    newSlide.className = 'slide';
-    newSlide.dataset.id = slideId;
-    
-    newSlide.innerHTML = `
-        <img src="${imageUrl}" alt="슬라이드 이미지">
-        <div class="slide-close">&times;</div>
-    `;
-
-    // 이벤트 리스너 추가
-    newSlide.addEventListener('click', () => handleSlideClick(slideId));
-    newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
-        event.stopPropagation();
-        removeSlide(slideId);
-    });
-
-    return newSlide;
-}
-
+// addImageToMediabox 함수를 전역에 등록
 window.addImageToMediabox = addImageToMediabox;
 
 // 슬라이드 목록에 이미지 추가
