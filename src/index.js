@@ -974,7 +974,7 @@ function addSlide() {
     syncSlideQueueWithDOM();
 }
 
-// 미리보기 윈도우 로직 수정
+// 미리보기 창을 여는 함수 (미리보기 버튼을 눌렀을 때만 호출됨)
 function openPreviewWindow() {
     const groupTitle = document.querySelector('.group-title input').value;
     const description = document.querySelector('.description textarea').value;
@@ -984,7 +984,7 @@ function openPreviewWindow() {
     const descriptionParam = encodeURIComponent(description);
 
     const url = `preview.html?slideQueue=${slideQueueParam}&groupTitle=${groupTitleParam}&description=${descriptionParam}`;
-    window.open('preview.html', 'previewWindow', 'width=800,height=860');
+    window.open(url, 'previewWindow', 'width=800,height=860');
 }
 
 function addImageInputFields() {
@@ -1042,16 +1042,58 @@ function previewImage() {
     }
 }
 
-// 이미지 데이터를 세션 스토리지에 저장
+// 이미지 슬라이드를 목록에 추가하는 함수
 function addImageToMediabox() {
     const fileInput = document.getElementById('imageInput');
+    const duration = parseInt(document.getElementById('imageDuration').value) || 5;
+
     if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
         const reader = new FileReader();
+
         reader.onload = function (e) {
-            sessionStorage.setItem('previewImage', e.target.result); // 이미지 데이터 저장
-            openPreviewWindow(); // 미리보기 창 열기
+            const imageUrl = e.target.result;
+            const slideId = createUniqueSlideId();
+
+            // 슬라이드 큐에 이미지 추가
+            slideQueue.push({
+                id: slideId,
+                type: 'image',
+                imageUrl,
+                duration
+            });
+
+            // 슬라이드 목록에 이미지 추가
+            const slidesContainer = document.querySelector('.slides');
+            const newSlide = document.createElement('div');
+            newSlide.className = 'slide';
+            newSlide.dataset.id = slideId;
+            newSlide.innerHTML = `
+                <img src="${imageUrl}" alt="Uploaded Image" style="aspect-ratio: 16/9;">
+                <div class="slide-close">&times;</div>
+            `;
+
+            newSlide.addEventListener('click', () => handleSlideClick(slideId));
+
+            const emptySlide = slidesContainer.querySelector('.empty-slide');
+            if (emptySlide) {
+                slidesContainer.insertBefore(newSlide, emptySlide);
+            } else {
+                slidesContainer.appendChild(newSlide);
+            }
+
+            // 슬라이드 삭제 버튼
+            newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
+                event.stopPropagation();
+                removeSlide(slideId);
+            });
+
+            makeSlidesSortable(); // 슬라이드 정렬 가능하도록
         };
-        reader.readAsDataURL(fileInput.files[0]);
+
+        reader.readAsDataURL(file);
+    } else {
+        alert('이미지를 선택해주세요.');
     }
 }
 
