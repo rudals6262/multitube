@@ -992,7 +992,7 @@ function addImageInputFields() {
     mediaboxContent.innerHTML = `
         <div class="image-container">
             <div class="image-frame" id="imageFrame" style="display: none;">
-                <div id="imagePreview"></div> <!-- 이미지 미리보기 영역 -->
+                <div id="imagePreview"></div>
             </div>
             <div class="time-slider-wrapper">
                 <div class="time-slider-container" style="display: block; overflow-x: auto;">
