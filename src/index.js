@@ -1009,17 +1009,22 @@ function addImageInputFields() {
                 </div>
             </div>    
             <div class="input-group">
-                <input type="file" id="imageInput" accept="image/*" onchange="previewImage()">
+                <input type="file" id="imageInput" accept="image/*">
                 <input type="number" id="imageDuration" placeholder="Duration (seconds)" min="1" value="5">
             </div>
             <div class="action-buttons">
                 <button class="media-select" onclick="resetMediabox()">미디어 선택</button>
                 <div class="confirm-buttons" style="display: flex;">
-                    <button class="confirm" onclick="addImageSlide()">확인</button>
+                    <button id="confirmImageButton" class="confirm">확인</button>
                 </div>
             </div>
         </div>
     `;
+
+    // 파일 선택 시 미리보기 함수 연결
+    document.getElementById('imageInput').addEventListener('change', previewImage);
+    // "확인" 버튼에 이벤트 리스너 추가
+    document.getElementById('confirmImageButton').addEventListener('click', addImageToMediabox);
 }
 
 // 이미지 미리보기를 위한 함수
@@ -1038,6 +1043,7 @@ function previewImage() {
     }
 }
 
+// 이미지 슬라이드 목록에 추가
 function addImageToMediabox() {
     const fileInput = document.getElementById('imageInput');
     const duration = parseInt(document.getElementById('imageDuration').value) || 5;
@@ -1048,19 +1054,43 @@ function addImageToMediabox() {
 
         reader.onload = function (e) {
             const imageUrl = e.target.result;
-            const imagePreview = document.getElementById('imagePreview');
-            
-            // 이미지 프레임 안에 이미지 삽입
-            imagePreview.innerHTML = `<img src="${imageUrl}" alt="Uploaded Image" style="width: 100%; height: auto;">`;
-
-            // 슬라이드에 추가될 이미지를 큐에 저장
             const slideId = createUniqueSlideId();
+
+            // 슬라이드 큐에 이미지 추가
             slideQueue.push({
                 id: slideId,
                 type: 'image',
                 imageUrl,
                 duration
             });
+
+            // 슬라이드 목록에 이미지 추가
+            const slidesContainer = document.querySelector('.slides');
+            const newSlide = document.createElement('div');
+            newSlide.className = 'slide';
+            newSlide.dataset.id = slideId;
+            newSlide.innerHTML = `
+                <img src="${imageUrl}" alt="Uploaded Image" style="aspect-ratio: 16/9;">
+                <div class="slide-close">&times;</div>
+            `;
+
+            // 슬라이드 클릭 시 편집 기능 활성화
+            newSlide.addEventListener('click', () => handleSlideClick(slideId));
+
+            const emptySlide = slidesContainer.querySelector('.empty-slide');
+            if (emptySlide) {
+                slidesContainer.insertBefore(newSlide, emptySlide);
+            } else {
+                slidesContainer.appendChild(newSlide);
+            }
+
+            // 슬라이드 삭제 버튼
+            newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
+                event.stopPropagation();
+                removeSlide(slideId);
+            });
+
+            makeSlidesSortable(); // 슬라이드 정렬 가능하도록
         };
 
         reader.readAsDataURL(file);
@@ -1068,6 +1098,9 @@ function addImageToMediabox() {
         alert('이미지를 선택해주세요.');
     }
 }
+
+// addImageToMediabox 함수를 전역에 등록
+window.addImageToMediabox = addImageToMediabox;
 
 // 슬라이드 목록에 이미지 추가
 function addImageSlide() {
