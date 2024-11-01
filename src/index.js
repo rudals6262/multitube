@@ -984,7 +984,7 @@ function openPreviewWindow() {
     const descriptionParam = encodeURIComponent(description);
 
     const url = `preview.html?slideQueue=${slideQueueParam}&groupTitle=${groupTitleParam}&description=${descriptionParam}`;
-    window.open(url, 'previewWindow', 'width=800,height=860');
+    window.open('preview.html', 'previewWindow', 'width=800,height=860');
 }
 
 function addImageInputFields() {
@@ -1053,11 +1053,6 @@ function addImageToMediabox() {
         };
         reader.readAsDataURL(fileInput.files[0]);
     }
-}
-
-// 미리보기 창을 여는 함수
-function openPreviewWindow() {
-    window.open('preview.html', 'previewWindow', 'width=800,height=860');
 }
 
 // addImageToMediabox 함수를 전역에 등록
