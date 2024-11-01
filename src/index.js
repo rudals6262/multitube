@@ -1042,59 +1042,22 @@ function previewImage() {
     }
 }
 
-// 이미지 슬라이드 목록에 추가 및 미리보기
+// 이미지 데이터를 세션 스토리지에 저장
 function addImageToMediabox() {
     const fileInput = document.getElementById('imageInput');
-    const duration = parseInt(document.getElementById('imageDuration').value) || 5;
-
     if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
         const reader = new FileReader();
-
         reader.onload = function (e) {
-            const imageUrl = e.target.result;
-            const slideId = createUniqueSlideId();
-
-            // 슬라이드 큐에 이미지 추가
-            slideQueue.push({
-                id: slideId,
-                type: 'image',
-                imageUrl,
-                duration
-            });
-
-            // 슬라이드 목록에 이미지 추가
-            const slidesContainer = document.querySelector('.slides');
-            const newSlide = document.createElement('div');
-            newSlide.className = 'slide';
-            newSlide.dataset.id = slideId;
-            newSlide.innerHTML = `
-                <img src="${imageUrl}" alt="Uploaded Image" style="aspect-ratio: 16/9;">
-                <div class="slide-close">&times;</div>
-            `;
-
-            newSlide.addEventListener('click', () => handleSlideClick(slideId));
-
-            const emptySlide = slidesContainer.querySelector('.empty-slide');
-            if (emptySlide) {
-                slidesContainer.insertBefore(newSlide, emptySlide);
-            } else {
-                slidesContainer.appendChild(newSlide);
-            }
-
-            // 슬라이드 삭제 버튼
-            newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
-                event.stopPropagation();
-                removeSlide(slideId);
-            });
-
-            makeSlidesSortable(); // 슬라이드 정렬 가능하도록
+            sessionStorage.setItem('previewImage', e.target.result); // 이미지 데이터 저장
+            openPreviewWindow(); // 미리보기 창 열기
         };
-
-        reader.readAsDataURL(file);
-    } else {
-        alert('이미지를 선택해주세요.');
+        reader.readAsDataURL(fileInput.files[0]);
     }
+}
+
+// 미리보기 창을 여는 함수
+function openPreviewWindow() {
+    window.open('preview.html', 'previewWindow', 'width=800,height=860');
 }
 
 // addImageToMediabox 함수를 전역에 등록
