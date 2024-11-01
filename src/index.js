@@ -974,15 +974,17 @@ function addSlide() {
     syncSlideQueueWithDOM();
 }
 
-// 미리보기 창을 여는 함수 (URL을 통해 이미지 데이터를 전달하지 않음)
+// 미리보기 창을 여는 함수 (미리보기 버튼을 눌렀을 때만 호출됨)
 function openPreviewWindow() {
     const groupTitle = document.querySelector('.group-title input').value;
     const description = document.querySelector('.description textarea').value;
 
-    sessionStorage.setItem('groupTitle', groupTitle);
-    sessionStorage.setItem('description', description);
+    const slideQueueParam = encodeURIComponent(JSON.stringify(slideQueue));
+    const groupTitleParam = encodeURIComponent(groupTitle);
+    const descriptionParam = encodeURIComponent(description);
 
-    window.open('preview.html', 'previewWindow', 'width=800,height=860');
+    const url = `preview.html?slideQueue=${slideQueueParam}&groupTitle=${groupTitleParam}&description=${descriptionParam}`;
+    window.open(url, 'previewWindow', 'width=800,height=860');
 }
 
 function addImageInputFields() {
