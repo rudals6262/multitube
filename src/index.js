@@ -974,20 +974,16 @@ function addSlide() {
     syncSlideQueueWithDOM();
 }
 
+// 미리보기 로직
 function openPreviewWindow() {
     const groupTitle = document.querySelector('.group-title input').value;
     const description = document.querySelector('.description textarea').value;
-
-    console.log("Opening preview. Current slideQueue:", slideQueue);
 
     const slideQueueParam = encodeURIComponent(JSON.stringify(slideQueue));
     const groupTitleParam = encodeURIComponent(groupTitle);
     const descriptionParam = encodeURIComponent(description);
 
     const url = `preview.html?slideQueue=${slideQueueParam}&groupTitle=${groupTitleParam}&description=${descriptionParam}`;
-
-    console.log("Opening preview window with URL:", url);
-
     window.open(url, 'previewWindow', 'width=800,height=860');
 }
 
