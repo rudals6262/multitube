@@ -991,7 +991,9 @@ function addImageInputFields() {
     const mediaboxContent = document.getElementById('mediabox-content');
     mediaboxContent.innerHTML = `
         <div class="image-container">
-            <div class="image-frame" id="imageFrame" style="display: none;">
+            <div class="image-frame">
+              <img id="uploadedImage" src="" alt="Uploaded Image" style="display: none;">
+            </div>
                 <div id="imagePreview"></div> <!-- 이미지 미리보기 영역 -->
             </div>
             <div class="time-slider-wrapper">
