@@ -996,7 +996,7 @@ function addImageInputFields() {
     mediaboxContent.innerHTML = `
         <div class="video-container">
             <div class="video-frame" style="display: block;">
-                <div id="imagePreview"></div> <!-- 이미지 프레임 추가 -->
+                <div id="imagePreview"></div> <!-- 이미지 미리보기 영역 -->
             </div>
             <div class="time-slider-wrapper">
                 <div class="time-slider-container" style="display: block; overflow-x: auto;">
@@ -1009,21 +1009,33 @@ function addImageInputFields() {
                 </div>
             </div>    
             <div class="input-group">
-                <input type="file" id="imageInput" accept="image/*">
+                <input type="file" id="imageInput" accept="image/*" onchange="previewImage()">
                 <input type="number" id="imageDuration" placeholder="Duration (seconds)" min="1" value="5">
-                <div class="plus-minus-buttons" style="display: none;">
-                    <button onclick="zoomOut()">-</button>
-                    <button onclick="zoomIn()">+</button>
-                </div>
             </div>
             <div class="action-buttons">
                 <button class="media-select" onclick="resetMediabox()">미디어 선택</button>
                 <div class="confirm-buttons" style="display: flex;">
-                    <button class="confirm" onclick="addImageToMediabox()">확인</button>
+                    <button class="confirm" onclick="addImageSlide()">확인</button>
                 </div>
             </div>
         </div>
     `;
+}
+
+// 이미지 미리보기를 위한 함수
+function previewImage() {
+    const fileInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image" style="width: 100%; height: auto;">`;
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    } else {
+        imagePreview.innerHTML = '';  // 파일이 선택되지 않으면 미리보기 제거
+    }
 }
 
 function addImageToMediabox() {
@@ -1057,6 +1069,7 @@ function addImageToMediabox() {
     }
 }
 
+// 슬라이드 목록에 이미지 추가
 function addImageSlide() {
     const fileInput = document.getElementById('imageInput');
     const duration = parseInt(document.getElementById('imageDuration').value) || 5;
@@ -1069,6 +1082,7 @@ function addImageSlide() {
             const imageUrl = e.target.result;
             const slideId = createUniqueSlideId();
 
+            // 슬라이드 큐에 이미지 추가
             slideQueue.push({
                 id: slideId,
                 type: 'image',
@@ -1076,6 +1090,7 @@ function addImageSlide() {
                 duration
             });
 
+            // 슬라이드 목록에 이미지 추가
             const slidesContainer = document.querySelector('.slides');
             const newSlide = document.createElement('div');
             newSlide.className = 'slide';
@@ -1085,6 +1100,7 @@ function addImageSlide() {
                 <div class="slide-close">&times;</div>
             `;
 
+            // 슬라이드 클릭 시 편집 기능 활성화
             newSlide.addEventListener('click', () => handleSlideClick(slideId));
 
             const emptySlide = slidesContainer.querySelector('.empty-slide');
@@ -1094,16 +1110,13 @@ function addImageSlide() {
                 slidesContainer.appendChild(newSlide);
             }
 
+            // 슬라이드 삭제 버튼
             newSlide.querySelector('.slide-close').addEventListener('click', (event) => {
                 event.stopPropagation();
                 removeSlide(slideId);
             });
 
-            makeSlidesSortable();
-
-            if (!document.querySelector('.empty-slide')) {
-                addEmptySlide();
-            }
+            makeSlidesSortable(); // 슬라이드 정렬 가능하도록
         };
 
         reader.readAsDataURL(file);
