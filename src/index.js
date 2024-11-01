@@ -974,7 +974,7 @@ function addSlide() {
     syncSlideQueueWithDOM();
 }
 
-// 미리보기 로직
+// 미리보기 윈도우 로직 수정
 function openPreviewWindow() {
     const groupTitle = document.querySelector('.group-title input').value;
     const description = document.querySelector('.description textarea').value;
